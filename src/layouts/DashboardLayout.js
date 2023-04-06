@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
-import { Dialog, Menu, Transition } from "@headlessui/react";
+import { Dialog, Menu, Transition, Popover } from "@headlessui/react";
 import {
   Bars3Icon,
   BellIcon,
@@ -11,8 +11,18 @@ import {
   GlobeAltIcon,
   UserGroupIcon,
   QuestionMarkCircleIcon,
+  ArrowPathIcon,
+  ChartPieIcon,
+  CursorArrowRaysIcon,
+  FingerPrintIcon,
+  SquaresPlusIcon,
 } from "@heroicons/react/24/outline";
-import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
+import {
+  MagnifyingGlassIcon,
+  ChevronDownIcon,
+  PhoneIcon,
+  PlayCircleIcon,
+} from "@heroicons/react/20/solid";
 import { Web3Button } from "@web3modal/react";
 import { useChainId, useSwitchNetwork, useAccount, useNetwork } from "wagmi";
 import Link from "next/link";
@@ -33,12 +43,52 @@ const teams = [
   { id: 2, name: "Tailwind Labs", href: "#", initial: "T", current: false },
   { id: 3, name: "Workcation", href: "#", initial: "W", current: false },
 ];
-
+const solutions = [
+  {
+    name: "Analytics",
+    description: "Get a better understanding of your traffic",
+    href: "#",
+    icon: ChartPieIcon,
+  },
+  {
+    name: "Engagement",
+    description: "Speak directly to your customers",
+    href: "#",
+    icon: CursorArrowRaysIcon,
+  },
+  {
+    name: "Security",
+    description: "Your customers' data will be safe and secure",
+    href: "#",
+    icon: FingerPrintIcon,
+  },
+  {
+    name: "Integrations",
+    description: "Connect with third-party tools",
+    href: "#",
+    icon: SquaresPlusIcon,
+  },
+  {
+    name: "Automations",
+    description: "Build strategic funnels that will convert",
+    href: "#",
+    icon: ArrowPathIcon,
+  },
+];
+const callsToAction = [
+  { name: "Watch demo", href: "#", icon: PlayCircleIcon },
+  { name: "Contact sales", href: "#", icon: PhoneIcon },
+];
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 let user = { userName: "", userId: "", userEmail: "", walletAddress: "" };
-export default function DashboardLayout({ children, currentTab, canSearch }) {
+export default function DashboardLayout({
+  children,
+  currentTab,
+  canSearch,
+  unpadded,
+}) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const account = useAccount();
   const chainid = useChainId();
@@ -52,8 +102,8 @@ export default function DashboardLayout({ children, currentTab, canSearch }) {
   if (account?.isConnecting || account?.isReconnecting) return;
   if (account.isDisconnected)
     return (
-      <div className="relative bg-gray-900 h-screen">
-        <div className="relative h-auto overflow-hidden bg-indigo-600 md:absolute md:left-0 md:h-full md:w-1/3 lg:w-1/2">
+      <div className="relative h-screen">
+        <div className="relative h-80 overflow-hidden bg-indigo-600 md:absolute md:left-0 md:h-full md:w-1/3 lg:w-1/2">
           <img
             className="h-full w-full object-cover"
             src={"/assets/images/daocon-cover.webp"}
@@ -191,17 +241,11 @@ export default function DashboardLayout({ children, currentTab, canSearch }) {
                         </ul>
                       </li>
 
-                      <li className="mt-auto">
-                        <a
-                          href="#"
-                          className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
-                        >
-                          <Cog6ToothIcon
-                            className="h-6 w-6 shrink-0"
-                            aria-hidden="true"
-                          />
-                          Settings
-                        </a>
+                      <li
+                        className="mt-auto"
+                        onClick={() => setSidebarOpen(false)}
+                      >
+                        <Web3Button />
                       </li>
                     </ul>
                   </nav>
@@ -319,8 +363,8 @@ export default function DashboardLayout({ children, currentTab, canSearch }) {
                 />
                 <input
                   id="search-field"
-                  className="block h-full w-full border-0 py-0 pl-8 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm"
-                  placeholder="Search..."
+                  className="block h-full w-full border-0 py-0 pl-8 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm"
+                  placeholder="Looking for something?"
                   type="search"
                   name="search"
                 />
@@ -335,22 +379,76 @@ export default function DashboardLayout({ children, currentTab, canSearch }) {
               >
                 <span className="sr-only">View notifications</span>
                 <BellIcon className="h-6 w-6" aria-hidden="true" />
+                {/* <Popover className="relative">
+                  <Popover.Button>
+                  </Popover.Button>
+                  <Transition
+                    as={Fragment}
+                    enter="transition ease-out duration-200"
+                    enterFrom="opacity-0 translate-y-1"
+                    enterTo="opacity-100 translate-y-0"
+                    leave="transition ease-in duration-150"
+                    leaveFrom="opacity-100 translate-y-0"
+                    leaveTo="opacity-0 translate-y-1"
+                  >
+                    <Popover.Panel className="absolute -right-0 z-10 mt-6 flex w-[92vw] max-w-max ">
+                      <div className="w-screen max-w-md flex-auto overflow-hidden rounded-3xl bg-purple-100 text-sm leading-6 shadow-lg ring-1 ring-gray-900/5">
+                        <div className="block">
+                          <nav className="flex space-x-4" aria-label="Tabs">
+                            <a
+                              key={"Host"}
+                              href={"#"}
+                              className={classNames(
+                                true
+                                  ? "bg-indigo-100 text-indigo-700"
+                                  : "text-gray-500 hover:text-gray-700",
+                                "rounded-md px-3 py-2 text-sm font-medium"
+                              )}
+                              aria-current={true ? "page" : undefined}
+                            >
+                              Host
+                            </a>
+                            <a
+                              key={"Event"}
+                              href={"#"}
+                              className={classNames(
+                                false
+                                  ? "bg-indigo-100 text-indigo-700"
+                                  : "text-gray-500 hover:text-gray-700",
+                                "rounded-md px-3 py-2 text-sm font-medium"
+                              )}
+                              aria-current={false ? "page" : undefined}
+                            >
+                              Event
+                            </a>
+                          </nav>
+                          Lorem ipsum dolor, sit amet consectetur adipisicing
+                          elit. Sint exercitationem eligendi similique excepturi
+                          tenetur totam incidunt ipsam quasi praesentium
+                          molestiae, eveniet, asperiores impedit enim. Enim
+                          tempora impedit officia natus non.
+                        </div>
+                      </div>
+                    </Popover.Panel>
+                  </Transition>
+                </Popover> */}
               </button>
               <div
                 className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10"
                 aria-hidden="true"
               />
-              <Web3Button />
             </div>
           </div>
         </div>
         <main className="py-10">
-          <div className="px-4 sm:px-6 lg:px-8">{children}</div>
+          <div className={unpadded ? "" : "px-4 sm:px-6 lg:px-8"}>
+            {children}
+          </div>
         </main>
         <span className="isolate border-0 inline-flex fixed -bottom-0.5 w-screen bg-slate-500 shadow-xl">
           <Link
             href={"/"}
-            className={`relative border-r border-sky-300 justify-center flex-col text-center w-full inline-flex items-center px-3 my-2 text-sm text-white focus:z-10 ${
+            className={`relative border-r border-gray-400 justify-center flex-col text-center w-full inline-flex items-center px-3 my-2 text-sm text-white focus:z-10 ${
               currentTab == "Schedule" ? "font-semibold" : "font-light"
             }`}
           >
@@ -364,7 +462,7 @@ export default function DashboardLayout({ children, currentTab, canSearch }) {
           </Link>
           <Link
             href={"/events"}
-            className={`relative border-r border-sky-300 justify-center flex-col text-center w-full inline-flex items-center px-3 my-2 text-sm text-white focus:z-10 ${
+            className={`relative border-r border-gray-400 justify-center flex-col text-center w-full inline-flex items-center px-3 my-2 text-sm text-white focus:z-10 ${
               currentTab == "Events" ? "font-semibold" : "font-light"
             }`}
           >

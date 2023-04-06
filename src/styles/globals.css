@@ -70,3 +70,12 @@ a {
 #telegram-login-daolens_bot {
   margin: auto;
 }
+
+.text_shadow {
+  color: rgb(27, 0, 74);
+  text-shadow:
+    -0.5px -0.5px 0 #ffffff,
+    0.5px -0.5px 0 #ffffff,
+    -0.5px 0.5px 0 #ffffff,
+    0.5px 0.5px 0 #ffffff;
+}
