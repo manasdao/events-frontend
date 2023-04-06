@@ -98,8 +98,8 @@ function Explore() {
                   key={index}
                   className={
                     index == 0
-                      ? "relative h-max w-40 mx-5 ml-10 overflow-visible"
-                      : "relative h-max w-40 mx-5 overflow-visible"
+                      ? "relative h-64 w-40 mx-5 ml-10 overflow-visible"
+                      : "relative h-64 w-40 mx-5 overflow-visible"
                   }
                 >
                   <img
@@ -107,7 +107,7 @@ function Explore() {
                     alt={singleActivity.exploreTitle}
                     className="rounded-4 w-40 object-cover h-60 drop-shadow-xl"
                   />
-                  <span className="drop-shadow-xl text-9xl font-semibold absolute -left-6 bottom-0 text_shadow text-transparent">
+                  <span className="drop-shadow-xl text-9xl font-semibold absolute -left-6 bottom-4 text_shadow text-transparent">
                     {index + 1}
                   </span>
                   <span className="drop-shadow-xl text-2xl text_shadow absolute top-1 -right-4">
@@ -127,8 +127,8 @@ function Explore() {
                   key={index}
                   className={
                     index == 0
-                      ? "relative h-max w-40 mx-5 ml-10 overflow-visible"
-                      : "relative h-max w-40 mx-5 overflow-visible"
+                      ? "relative h-64 w-40 mx-5 ml-10 overflow-visible"
+                      : "relative h-64 w-40 mx-5 overflow-visible"
                   }
                 >
                   <img
@@ -142,7 +142,7 @@ function Explore() {
                   <span className="drop-shadow-xl text-2xl text_shadow absolute top-1 -right-4">
                     {singleActivity.restaurantTitle}
                   </span>
-                  <span className="absolute right-2 bottom-2 bg-purple-100 rounded-full p-2">
+                  <span className="absolute right-2 bottom-6 bg-purple-100 rounded-full p-2 drop-shadow-xl">
                     <PhoneArrowUpRightIcon width={24} color="rgb(107,33,168)" />
                   </span>
                 </div>
