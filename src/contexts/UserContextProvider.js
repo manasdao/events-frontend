@@ -4,6 +4,7 @@ export const UserContext = createContext({});
 function UserContextProvider({ children }) {
   const [state, setState] = useState({
     userId: "",
+    isSigned: false,
     telegramDetails: null,
     walletDetails: null,
   });

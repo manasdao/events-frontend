@@ -1,21 +1,116 @@
 import Head from "next/head";
-import Image from "next/image";
-import { Inter } from "next/font/google";
-import DashboardLayout from "@/layouts/DashboardLayout";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "@/contexts/UserContextProvider";
+import { Web3Button } from "@web3modal/react";
 import ConnectTelegramModal from "@/components/modals/ConnectTelegramModal";
-import EventsFeed from "@/components/events/EventsFeed";
-
-const inter = Inter({ subsets: ["latin"] });
+import {
+  useAccount,
+  useChainId,
+  useNetwork,
+  useSwitchNetwork,
+  // useSignMessage,
+} from "wagmi";
+import customAxios from "@/utils/axios";
+import { useRouter } from "next/router";
+import { signMessage } from "@wagmi/core";
 
 export default function Home() {
+  // ! Contexts ****************************************************************************************************************
   const userContext = useContext(UserContext);
+  const router = useRouter();
+  // ! Hooks ****************************************************************************************************************
+  const account = useAccount();
+  const chainid = useChainId();
+  const network = useNetwork();
+  const { switchNetwork } = useSwitchNetwork();
+  // ! Local states ****************************************************************************************************************
   const [isTelegramModalOpen, setIsTelegramModalOpen] = useState(false);
+  // ! Local helpers ****************************************************************************************************************
+  const signMessageForToken = () => {
+    console.log("signing start");
+    // ! Fetch local token
+    customAxios
+      .post("auth/metamask", {
+        publicAddress: account.address,
+      })
+      .then((res) => {
+        console.log("temptoken");
+        // ! Sign the one time nonce
+        signMessage({
+          message: `I am signing my one-time nonce: ${res.data.message}`,
+        })
+          .then((signingResponse) => {
+            console.log("signingResponse", signingResponse);
+            // ! Metamsk login by passign the signature
+            customAxios
+              .post("auth/metamask/login", {
+                isWalletConnect: false,
+                token: `Bearer ${res.data.token}`,
+                signature: signingResponse,
+              })
+              .then((res) => {
+                console.log("meta login resp");
+                // ! Store the access token on LS
+                window.localStorage.setItem(
+                  "access_token",
+                  res.data.access_token
+                );
+                userContext.setUserContext({ isSigned: true });
+                router.replace("/schedule");
+              })
+              // ! Fetch local token error
+              .catch((err) =>
+                console.log("\n\nFetch local token error\n\n", err)
+              );
+          })
+          // ! Sign the one time nonce error
+          .catch((err) =>
+            console.log("\n\nSign the one time nonce error\n\n", err)
+          );
+      })
+      // ! Metamsk login by passign the signature error
+      .catch((err) =>
+        console.log("\n\nMetamsk login by passign the signature error\n\n", err)
+      );
+  };
+  // ! Effects ****************************************************************************************************************
   useEffect(() => {
-    if (!userContext.telegramDetails) setIsTelegramModalOpen(true);
-  }, []);
-  console.log();
+    console.log("running", account, userContext.isSigned);
+    if (account.isConnected && !userContext.isSigned) {
+      signMessageForToken();
+    }
+  }, [account.isConnected]);
+  // useEffect(() => {
+  //   if (signingData) {
+  //     customAxios
+  //       .post("auth/metamask/login", {
+  //         isWalletConnect: false,
+  //         token: `Bearer ${localToken}`,
+  //         signature: signingData,
+  //       })
+  //       .then((res) => {
+  //         setLocalToken(null);
+  //         window.localStorage.setItem("access_token", res.data.access_token);
+  //         userContext.setUserContext({ isSigned: true });
+  //       })
+  //       .catch((err) => console.log("err", err));
+  //   }
+  // }, [signingData]);
+
+  useEffect(() => {
+    if (switchNetwork && chainid !== 137) switchNetwork(137);
+  }, [chainid, switchNetwork]);
+  // useEffect(() => {
+  //   if (account.isDisconnected && !userContext.telegramDetails)
+  //     setIsTelegramModalOpen(true);
+  // }, []);
+  useEffect(() => {
+    if (account.isConnected && userContext.isSigned) {
+      if (!userContext.telegramDetails) router.replace("/schedule");
+      else setIsTelegramModalOpen(true);
+    }
+  }, [userContext.isSigned, userContext.telegramDetails]);
+
   return (
     <>
       <Head>
@@ -25,18 +120,60 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
       </Head>
-      <DashboardLayout currentTab="Schedule">
-        {userContext.telegramDetails ? (
-          <main>
-            <EventsFeed eventsTitle="My Schedule" />
-          </main>
-        ) : (
-          <ConnectTelegramModal
-            open={isTelegramModalOpen}
-            setOpen={setIsTelegramModalOpen}
+
+      <div className="relative h-screen">
+        <div className="relative h-80 overflow-hidden bg-indigo-600 md:absolute md:left-0 md:h-full md:w-1/3 lg:w-1/2">
+          <img
+            className="h-full w-full object-cover"
+            src={"/assets/images/daocon-cover.webp"}
+            alt="daocon_image"
           />
-        )}
-      </DashboardLayout>
+          <svg
+            viewBox="0 0 926 676"
+            aria-hidden="true"
+            className="absolute -bottom-24 left-24 w-[57.875rem] transform-gpu blur-[118px]"
+          >
+            <path
+              fill="url(#60c3c621-93e0-4a09-a0e6-4c228a0116d8)"
+              fillOpacity=".4"
+              d="m254.325 516.708-90.89 158.331L0 436.427l254.325 80.281 163.691-285.15c1.048 131.759 36.144 345.144 168.149 144.613C751.171 125.508 707.17-93.823 826.603 41.15c95.546 107.978 104.766 294.048 97.432 373.585L685.481 297.694l16.974 360.474-448.13-141.46Z"
+            />
+            <defs>
+              <linearGradient
+                id="60c3c621-93e0-4a09-a0e6-4c228a0116d8"
+                x1="926.392"
+                x2="-109.635"
+                y1=".176"
+                y2="321.024"
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop stopColor="#776FFF" />
+                <stop offset={1} stopColor="#FF4694" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div className="relative mx-auto h-max max-w-7xl py-12 sm:py-32 lg:px-8 lg:py-40">
+          <div className="pl-6 pr-6 md:ml-auto md:w-2/3 md:pl-16 lg:w-1/2 lg:pl-24 lg:pr-0 xl:pl-32">
+            <h2 className="text-base font-semibold leading-7 text-indigo-400">
+              Welcome
+            </h2>
+            <p className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              DAOCON Paris 2023
+            </p>
+            <p className="mt-6 text-base leading-7 text-gray-300">
+              The first DAO trade show and the biggest DAO event in 2023
+            </p>
+            <div className="mt-8">
+              <Web3Button />
+            </div>
+          </div>
+        </div>
+        <ConnectTelegramModal
+          open={isTelegramModalOpen}
+          setOpen={setIsTelegramModalOpen}
+        />
+      </div>
     </>
   );
 }

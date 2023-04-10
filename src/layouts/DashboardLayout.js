@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 import { Dialog, Menu, Transition, Popover } from "@headlessui/react";
 import {
   Bars3Icon,
@@ -11,21 +11,14 @@ import {
   GlobeAltIcon,
   UserGroupIcon,
   QuestionMarkCircleIcon,
-  ArrowPathIcon,
-  ChartPieIcon,
-  CursorArrowRaysIcon,
-  FingerPrintIcon,
-  SquaresPlusIcon,
+  ChatBubbleLeftIcon,
 } from "@heroicons/react/24/outline";
-import {
-  MagnifyingGlassIcon,
-  ChevronDownIcon,
-  PhoneIcon,
-  PlayCircleIcon,
-} from "@heroicons/react/20/solid";
+import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import { Web3Button } from "@web3modal/react";
-import { useChainId, useSwitchNetwork, useAccount, useNetwork } from "wagmi";
+import { useChainId, useSwitchNetwork, useAccount } from "wagmi";
 import Link from "next/link";
+import { UserContext } from "@/contexts/UserContextProvider";
+import customAxios from "@/utils/axios";
 // import daocon_image from "../assets/images/daocon-cover.webp";
 const navigation = [
   { name: "Explore", href: "/explore", icon: GlobeAltIcon, current: false },
@@ -43,42 +36,6 @@ const teams = [
   { id: 2, name: "Tailwind Labs", href: "#", initial: "T", current: false },
   { id: 3, name: "Workcation", href: "#", initial: "W", current: false },
 ];
-const solutions = [
-  {
-    name: "Analytics",
-    description: "Get a better understanding of your traffic",
-    href: "#",
-    icon: ChartPieIcon,
-  },
-  {
-    name: "Engagement",
-    description: "Speak directly to your customers",
-    href: "#",
-    icon: CursorArrowRaysIcon,
-  },
-  {
-    name: "Security",
-    description: "Your customers' data will be safe and secure",
-    href: "#",
-    icon: FingerPrintIcon,
-  },
-  {
-    name: "Integrations",
-    description: "Connect with third-party tools",
-    href: "#",
-    icon: SquaresPlusIcon,
-  },
-  {
-    name: "Automations",
-    description: "Build strategic funnels that will convert",
-    href: "#",
-    icon: ArrowPathIcon,
-  },
-];
-const callsToAction = [
-  { name: "Watch demo", href: "#", icon: PlayCircleIcon },
-  { name: "Contact sales", href: "#", icon: PhoneIcon },
-];
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -89,69 +46,28 @@ export default function DashboardLayout({
   canSearch,
   unpadded,
 }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  // ! Hooks ****************************************************************************************************************
   const account = useAccount();
   const chainid = useChainId();
-  const network = useNetwork();
+
   const { switchNetwork } = useSwitchNetwork();
-  console.log("wagmi", account);
+  // ! Contexts ****************************************************************************************************************
+  const userContext = useContext(UserContext);
+  // ! Local states ****************************************************************************************************************
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  // ! Local helpers ****************************************************************************************************************
+
+  // ! Effects ****************************************************************************************************************
+
   useEffect(() => {
     if (switchNetwork && chainid !== 137) switchNetwork(137);
   }, [chainid, switchNetwork]);
 
+  // ! Console logs ****************************************************************************************************************
+  console.log("wagmi", account);
+
   if (account?.isConnecting || account?.isReconnecting) return;
-  if (account.isDisconnected)
-    return (
-      <div className="relative h-screen">
-        <div className="relative h-80 overflow-hidden bg-indigo-600 md:absolute md:left-0 md:h-full md:w-1/3 lg:w-1/2">
-          <img
-            className="h-full w-full object-cover"
-            src={"/assets/images/daocon-cover.webp"}
-            alt="daocon_image"
-          />
-          <svg
-            viewBox="0 0 926 676"
-            aria-hidden="true"
-            className="absolute -bottom-24 left-24 w-[57.875rem] transform-gpu blur-[118px]"
-          >
-            <path
-              fill="url(#60c3c621-93e0-4a09-a0e6-4c228a0116d8)"
-              fillOpacity=".4"
-              d="m254.325 516.708-90.89 158.331L0 436.427l254.325 80.281 163.691-285.15c1.048 131.759 36.144 345.144 168.149 144.613C751.171 125.508 707.17-93.823 826.603 41.15c95.546 107.978 104.766 294.048 97.432 373.585L685.481 297.694l16.974 360.474-448.13-141.46Z"
-            />
-            <defs>
-              <linearGradient
-                id="60c3c621-93e0-4a09-a0e6-4c228a0116d8"
-                x1="926.392"
-                x2="-109.635"
-                y1=".176"
-                y2="321.024"
-                gradientUnits="userSpaceOnUse"
-              >
-                <stop stopColor="#776FFF" />
-                <stop offset={1} stopColor="#FF4694" />
-              </linearGradient>
-            </defs>
-          </svg>
-        </div>
-        <div className="relative mx-auto h-max max-w-7xl py-12 sm:py-32 lg:px-8 lg:py-40">
-          <div className="pl-6 pr-6 md:ml-auto md:w-2/3 md:pl-16 lg:w-1/2 lg:pl-24 lg:pr-0 xl:pl-32">
-            <h2 className="text-base font-semibold leading-7 text-indigo-400">
-              Welcome
-            </h2>
-            <p className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              DAOCON Paris 2023
-            </p>
-            <p className="mt-6 text-base leading-7 text-gray-300">
-              The first DAO trade show and the biggest DAO event in 2023
-            </p>
-            <div className="mt-8">
-              <Web3Button className="button" />
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+
   return (
     <div className="mb-12">
       <Transition.Root show={sidebarOpen} as={Fragment}>
@@ -255,7 +171,13 @@ export default function DashboardLayout({
           </div>
         </Dialog>
       </Transition.Root>
-
+      <Link
+        type="button"
+        class="fixed bottom-20 z-[65] right-6 drop-shadow-xl rounded-full bg-indigo-600 p-2 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        href={"https://telegram.me/MukundChourey"}
+      >
+        <ChatBubbleLeftIcon width={32} />
+      </Link>
       {/* Static sidebar for desktop */}
       <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
         {/* Sidebar component, swap this element with another sidebar if you like */}

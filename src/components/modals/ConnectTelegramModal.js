@@ -4,11 +4,25 @@ import { CheckIcon, LinkIcon } from "@heroicons/react/24/outline";
 import TelegramLoginButton from "react-telegram-login";
 import { UserContext } from "@/contexts/UserContextProvider";
 import { toast } from "react-toastify";
+import customAxios from "@/utils/axios";
+import { useAccount } from "wagmi";
 export default function ConnectTelegramModal({ open, setOpen }) {
   const userContext = useContext(UserContext);
+  const { address } = useAccount();
   const handleTelegramResponse = (response) => {
     console.log(response);
     userContext.setUserContext({ telegramDetails: response });
+    customAxios
+      .post("/users/create", {
+        userName: response.username,
+        firstName: response.first_name,
+        lastName: response.last_name,
+        profilePicture: response.photo_url,
+        walletAddress: address,
+        telegramId: response.id,
+      })
+      .then((res) => console.log("res", res))
+      .catch((err) => console.log("err", err));
     setOpen(false);
   };
   return (
