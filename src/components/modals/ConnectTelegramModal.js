@@ -19,7 +19,7 @@ export default function ConnectTelegramModal({ open, setOpen }) {
         lastName: response.last_name,
         profilePicture: response.photo_url,
         walletAddress: address,
-        telegramId: response.id,
+        telegramId: `${response.id}`,
       })
       .then((res) => console.log("res", res))
       .catch((err) => console.log("err", err));

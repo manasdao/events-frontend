@@ -18,8 +18,6 @@ import { Web3Button } from "@web3modal/react";
 import { useChainId, useSwitchNetwork, useAccount } from "wagmi";
 import Link from "next/link";
 import { UserContext } from "@/contexts/UserContextProvider";
-import customAxios from "@/utils/axios";
-// import daocon_image from "../assets/images/daocon-cover.webp";
 const navigation = [
   { name: "Explore", href: "/explore", icon: GlobeAltIcon, current: false },
   { name: "DAO-CON team", href: "/team", icon: UserGroupIcon, current: false },
@@ -411,6 +409,7 @@ export default function DashboardLayout({
             />
             <span>Profile</span>
           </Link>
+
         </span>
       </div>
     </div>
