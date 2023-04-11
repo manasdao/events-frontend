@@ -6,16 +6,30 @@ import { useContext, useEffect, useState } from "react";
 import { UserContext } from "@/contexts/UserContextProvider";
 import ConnectTelegramModal from "@/components/modals/ConnectTelegramModal";
 import EventsFeed from "@/components/events/EventsFeed";
+import customAxios from "@/utils/axios";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Schedule() {
   const userContext = useContext(UserContext);
   const [isTelegramModalOpen, setIsTelegramModalOpen] = useState(false);
+  const [allEvents, setAllEvents] = useState(null);
+
   useEffect(() => {
     if (!userContext.telegramDetails) setIsTelegramModalOpen(true);
+    customAxios
+      .get(`/events/myevents`, {
+        headers: { workspace: "2" },
+      })
+      .then((res) => {
+        console.log("res", res);
+        setAllEvents(res.data);
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
   }, []);
-  console.log();
+
   return (
     <>
       <Head>
@@ -28,7 +42,7 @@ export default function Schedule() {
       <DashboardLayout currentTab="Schedule">
         {userContext.telegramDetails ? (
           <main>
-            <EventsFeed eventsTitle="My Schedule" />
+            <EventsFeed eventsTitle="My Schedule" allEvents={allEvents} />
           </main>
         ) : (
           <ConnectTelegramModal

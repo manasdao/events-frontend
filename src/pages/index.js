@@ -158,7 +158,7 @@ export default function Home() {
                   <button
                     onClick={signMessageForToken}
                     type="button"
-                    class="rounded-lg ml-4 bg-white/40 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-white/20"
+                    className="rounded-lg ml-4 bg-white/40 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-white/20"
                   >
                     Sign again
                   </button>
@@ -166,7 +166,7 @@ export default function Home() {
                   <div role="status" className="ml-4">
                     <svg
                       aria-hidden="true"
-                      class="w-8 h-8 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                      className="w-8 h-8 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
                       viewBox="0 0 100 101"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
@@ -180,7 +180,7 @@ export default function Home() {
                         fill="currentFill"
                       />
                     </svg>
-                    <span class="sr-only">Loading...</span>
+                    <span className="sr-only">Loading...</span>
                   </div>
                 )
               ) : null}

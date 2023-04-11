@@ -10,6 +10,7 @@ const requestHandler = (request) => {
       Authorization: "Bearer " + token,
       // domain_url: `https://${window.location.host}`,
       "ngrok-skip-browser-warning": true,
+      ...request.headers,
     };
     request.headers = config;
   }

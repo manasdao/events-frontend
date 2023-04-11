@@ -12,14 +12,23 @@ import {
   UserGroupIcon,
   QuestionMarkCircleIcon,
   ChatBubbleLeftIcon,
+  CurrencyDollarIcon,
 } from "@heroicons/react/24/outline";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import { Web3Button } from "@web3modal/react";
 import { useChainId, useSwitchNetwork, useAccount } from "wagmi";
 import Link from "next/link";
 import { UserContext } from "@/contexts/UserContextProvider";
+import { useRouter } from "next/router";
+import { mixpanel } from "@/utils/mixpanel";
 const navigation = [
-  { name: "Explore", href: "/explore", icon: GlobeAltIcon, current: false },
+  { name: "Explore DAO-CON", href: "/explore", icon: GlobeAltIcon, current: false },
+  {
+    name: "Sponsors",
+    href: "/sponsors",
+    icon: CurrencyDollarIcon,
+    current: false,
+  },
   { name: "DAO-CON team", href: "/team", icon: UserGroupIcon, current: false },
   { name: "FAQ", href: "/faq", icon: QuestionMarkCircleIcon, current: false },
   {
@@ -45,10 +54,11 @@ export default function DashboardLayout({
   unpadded,
 }) {
   // ! Hooks ****************************************************************************************************************
+  const router = useRouter();
   const account = useAccount();
   const chainid = useChainId();
-
   const { switchNetwork } = useSwitchNetwork();
+
   // ! Contexts ****************************************************************************************************************
   const userContext = useContext(UserContext);
   // ! Local states ****************************************************************************************************************
@@ -60,10 +70,22 @@ export default function DashboardLayout({
   useEffect(() => {
     if (switchNetwork && chainid !== 137) switchNetwork(137);
   }, [chainid, switchNetwork]);
+  useEffect(() => {
+    if (account.isDisconnected) {
+      mixpanel("wallet_disconnecting", {
+        source_page: router.pathname,
+        triggered_location: "page",
+      });
+      router.replace("/");
+    }
+    if (account.isConnecting || account.isReconnecting)
+      mixpanel("wallet_connecting", {
+        source_page: router.pathname,
+        triggered_location: "page",
+      });
+  }, [account]);
 
   // ! Console logs ****************************************************************************************************************
-  console.log("wagmi", account);
-
   if (account?.isConnecting || account?.isReconnecting) return;
 
   return (
@@ -171,7 +193,7 @@ export default function DashboardLayout({
       </Transition.Root>
       <Link
         type="button"
-        class="fixed bottom-20 z-[65] right-6 drop-shadow-xl rounded-full bg-indigo-600 p-2 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        className="fixed bottom-20 z-[65] right-6 drop-shadow-xl rounded-full bg-indigo-600 p-2 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         href={"https://telegram.me/MukundChourey"}
       >
         <ChatBubbleLeftIcon width={32} />
@@ -367,7 +389,14 @@ export default function DashboardLayout({
         </main>
         <span className="isolate border-0 inline-flex fixed -bottom-0.5 w-screen bg-slate-500 shadow-xl">
           <Link
-            href={"/"}
+            href={"/schedule"}
+            onClick={() => {
+              mixpanel("bottom_nav_link_click", {
+                source_page: router.pathname,
+                destinationUrl: "/schedule",
+                triggered_location: "bottom_nav",
+              });
+            }}
             className={`relative border-r border-gray-400 justify-center flex-col text-center w-full inline-flex items-center px-3 my-2 text-sm text-white focus:z-10 ${
               currentTab == "Schedule" ? "font-semibold" : "font-light"
             }`}
@@ -382,6 +411,13 @@ export default function DashboardLayout({
           </Link>
           <Link
             href={"/events"}
+            onClick={() => {
+              mixpanel("bottom_nav_link_click", {
+                source_page: router.pathname,
+                destinationUrl: "/events",
+                triggered_location: "bottom_nav",
+              });
+            }}
             className={`relative border-r border-gray-400 justify-center flex-col text-center w-full inline-flex items-center px-3 my-2 text-sm text-white focus:z-10 ${
               currentTab == "Events" ? "font-semibold" : "font-light"
             }`}
@@ -397,6 +433,13 @@ export default function DashboardLayout({
 
           <Link
             href="/profile"
+            onClick={() => {
+              mixpanel("bottom_nav_link_click", {
+                source_page: router.pathname,
+                destinationUrl: "/profile",
+                triggered_location: "bottom_nav",
+              });
+            }}
             className={`relative justify-center flex-col text-center w-full -ml-px inline-flex items-center px-3 my-2 text-sm font-light text-white focus:z-10 ${
               currentTab == "Profile" ? "font-semibold" : "font-light"
             }`}
@@ -409,7 +452,6 @@ export default function DashboardLayout({
             />
             <span>Profile</span>
           </Link>
-
         </span>
       </div>
     </div>

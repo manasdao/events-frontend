@@ -1,8 +1,10 @@
 import { UserContext } from "@/contexts/UserContextProvider";
+import { giveRandomIcon } from "@/utils/helpers";
+import Link from "next/link";
 import React, { useContext } from "react";
 import { SocialIcon } from "react-social-icons";
 
-function MyProfile() {
+function SpeakerProfile({ speakerDetails }) {
   const { telegramDetails } = useContext(UserContext);
   let myPoaps = [
     { iconUrl: telegramDetails?.photo_url, poapName: "Poap " },
@@ -33,7 +35,7 @@ function MyProfile() {
                 className="w-16 rounded-full shadow-lg drop-shadow-lg"
               />
               <h4 className="text-4xl my-3 text-purple-900 font-bold">
-                {telegramDetails?.first_name} {telegramDetails?.last_name}
+                {speakerDetails.fields?.Name}
               </h4>
             </div>
             <div className="mb-4 flex justify-center sm:mb-0 sm:mr-4">
@@ -55,13 +57,62 @@ function MyProfile() {
               <SocialIcon url="https://www.t.me/scotch1998" className="mx-4" />
             </div>
             <div>
-              <h4 className="text-lg text-gray-200 font-bold">Bio</h4>
-              <p className="mt-1 text-purple-300">
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                Distinctio commodi vel culpa fugit numquam ratione dolorum
-                animi, aperiam minus accusantium!
-              </p>
-              <h4 className="text-lg text-gray-300 my-2 font-bold">POAPs</h4>
+              {speakerDetails.fields?.Bio && (
+                <>
+                  <h4 className="text-lg text-gray-200 font-bold">Bio</h4>
+                  <p className="mt-1 text-purple-300">
+                    {speakerDetails.fields.Bio}
+                  </p>
+                </>
+              )}
+              {speakerDetails.fields?.ScheduleName?.length > 0 && (
+                <>
+                  <h4 className="text-lg text-gray-200 font-bold mt-4">
+                    Talks
+                  </h4>
+                  <ol className="flex flex-col items-left">
+                    {speakerDetails.fields.ScheduleName.map(
+                      (singleTalk, index) => {
+                        return (
+                          <li key={speakerDetails.fields.Schedule[index]}>
+                            <Link
+                              className="mt-1 text-purple-300"
+                              href={`/event/${speakerDetails.fields.Schedule[index]}`}
+                            >
+                              {giveRandomIcon()} {singleTalk}
+                            </Link>
+                          </li>
+                        );
+                      }
+                    )}
+                  </ol>
+                </>
+              )}
+              {speakerDetails.fields["Side Events Names"]?.length > 0 && (
+                <>
+                  <h4 className="text-lg text-gray-200 font-bold mt-4">
+                    Side Events
+                  </h4>
+                  <ol className="flex flex-col items-left">
+                    {speakerDetails.fields["Side Events Names"].map(
+                      (singleEvent, index) => {
+                        return (
+                          <li key={speakerDetails.fields["Side Events"][index]}>
+                            <Link
+                              className="mt-1 text-purple-300"
+                              href={`/event/${speakerDetails.fields["Side Events"][index]}`}
+                            >
+                              {giveRandomIcon()} {singleEvent}
+                            </Link>
+                          </li>
+                        );
+                      }
+                    )}
+                  </ol>
+                </>
+              )}
+
+              <h4 className="text-lg text-gray-300 my-4 font-bold">POAPs</h4>
               <div className="overflow-x-scroll flex items-center">
                 {myPoaps.map((singlePoap, index) => {
                   return (
@@ -88,4 +139,4 @@ function MyProfile() {
   );
 }
 
-export default MyProfile;
+export default SpeakerProfile;

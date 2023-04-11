@@ -55,7 +55,6 @@ export default function App({ Component, pageProps }) {
     setReady(true);
     mixpanel.init(process.env.NEXT_PUBLIC_MIXPANEL_KEY, { debug: true });
     window.mixpanel = mixpanel;
-    console.log("theme", theme);
     setTheme({
       themeVariables: {
         "--w3m-text-medium-regular-size": "14px",
