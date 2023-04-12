@@ -379,50 +379,52 @@ export default function DashboardLayout({
                     leaveFrom="opacity-100 translate-y-0"
                     leaveTo="opacity-0 translate-y-1"
                   >
-                    <Popover.Panel className="absolute -right-0 z-10 mt-6 flex w-[92vw] max-w-[360px] ">
+                    <Popover.Panel className="absolute -right-0 z-10 mt-6 flex w-[92vw] max-w-[360px]">
                       <div className="w-screen max-w-md flex-auto overflow-hidden rounded-lg bg-purple-100 text-sm leading-6 shadow-lg ring-1 ring-gray-900/5">
                         <div className="flex flex-col items-left w-full pt-2 pb-4">
                           <span className="text-2xl pl-6 block my-4 font-semibold text-left text-purple-950">
                             Announcements
                           </span>
-                          {announcements?.length > 0 &&
-                            announcements.map((singleAnnouncement, index) => {
-                              return (
-                                <>
-                                  <Link
-                                    href={linkGenerator(
-                                      singleAnnouncement.type,
-                                      singleAnnouncement.airtableId
-                                    )}
-                                    key={singleAnnouncement.id}
-                                    className="w-full grid items-center px-4"
-                                    style={{
-                                      gridTemplateColumns: "1fr 6fr 3fr",
-                                    }}
-                                  >
-                                    <span className="text-2xl">
-                                      {giveRandomIcon()}
-                                    </span>
-                                    <div className="flex flex-col items-left ml-4">
-                                      <span className="text-purple-950 text-lg text-left font-medium">
-                                        {singleAnnouncement.title}
+                          <div className=" max-h-[450px]  overflow-y-scroll">
+                            {announcements?.length > 0 &&
+                              announcements.map((singleAnnouncement, index) => {
+                                return (
+                                  <>
+                                    <Link
+                                      href={linkGenerator(
+                                        singleAnnouncement.type,
+                                        singleAnnouncement.airtableId
+                                      )}
+                                      key={singleAnnouncement.id}
+                                      className="w-full grid items-center px-4"
+                                      style={{
+                                        gridTemplateColumns: "1fr 6fr 3fr",
+                                      }}
+                                    >
+                                      <span className="text-2xl">
+                                        {giveRandomIcon()}
                                       </span>
-                                      <span className="text-purple-600 text-left">
-                                        {singleAnnouncement.description}
+                                      <div className="flex flex-col items-left ml-4">
+                                        <span className="text-purple-950 text-lg text-left font-medium">
+                                          {singleAnnouncement.title}
+                                        </span>
+                                        <span className="text-purple-600 text-left">
+                                          {singleAnnouncement.description}
+                                        </span>
+                                      </div>
+                                      <span className="self-end justify-self-end">
+                                        {moment(
+                                          singleAnnouncement.createdAt
+                                        ).format("HH:MM A")}
                                       </span>
-                                    </div>
-                                    <span className="self-end justify-self-end">
-                                      {moment(
-                                        singleAnnouncement.createdAt
-                                      ).format("HH:MM A")}
-                                    </span>
-                                  </Link>{" "}
-                                  {index !== announcements.length - 1 && (
-                                    <hr class="my-2 h-px border-t-0 bg-transparent bg-gradient-to-r from-transparent via-neutral-500 to-transparent opacity-25 dark:opacity-100" />
-                                  )}{" "}
-                                </>
-                              );
-                            })}
+                                    </Link>{" "}
+                                    {index !== announcements.length - 1 && (
+                                      <hr class="my-2 h-px border-t-0 bg-transparent bg-gradient-to-r from-transparent via-neutral-500 to-transparent opacity-25 dark:opacity-100" />
+                                    )}{" "}
+                                  </>
+                                );
+                              })}
+                          </div>
                         </div>
                       </div>
                     </Popover.Panel>

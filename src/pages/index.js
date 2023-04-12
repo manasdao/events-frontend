@@ -31,59 +31,83 @@ export default function Home() {
   const signMessageForToken = () => {
     console.log("signing start");
     setIsSigning(true);
-    // ! Fetch local token
     customAxios
-      .post("auth/metamask", {
-        publicAddress: account.address,
-      })
+      .post(
+        "/auth/login",
+        {
+          walletAddress: account.address,
+          isWalletConnect: false,
+        },
+        { headers: { workspace: "2" } }
+      )
       .then((res) => {
-        console.log("temptoken");
-        // ! Sign the one time nonce
-        signMessage({
-          message: `I am signing my one-time nonce: ${res.data.message}`,
-        })
-          .then((signingResponse) => {
-            console.log("signingResponse", signingResponse);
-            // ! Metamsk login by passign the signature
-            customAxios
-              .post("auth/metamask/login", {
-                isWalletConnect: false,
-                token: `Bearer ${res.data.token}`,
-                signature: signingResponse,
-              })
-              .then((res) => {
-                console.log("meta login resp");
-                // ! Store the access token on LS
-                window.localStorage.setItem(
-                  "access_token",
-                  res.data.access_token
-                );
-                userContext.setUserContext({ isSigned: true });
-                router.replace("/schedule");
-                setIsSigning(false);
-              })
-              // ! Metamsk login by passign the signature error
-              .catch((err) => {
-                console.log(
-                  "\n\nMetamsk login by passign the signature error\n\n",
-                  err
-                );
-              });
-          })
-          // ! Sign the one time nonce error
-          .catch((err) => {
-            toast.error("Signing failed");
-            setIsSigning("FAILED");
-            console.log("\n\nSign the one time nonce error\n\n", err);
-          });
+        console.log("meta login resp");
+        // ! Store the access token on LS
+        window.localStorage.setItem("access_token", res.data.access_token);
+        userContext.setUserContext({ isSigned: true });
+        router.replace("/schedule");
+        setIsSigning(false);
       })
-      // ! Fetch local token error
-      .catch((err) => console.log("\n\nFetch local token error\n\n", err));
+      // ! Metamsk login by passign the signature error
+      .catch((err) => {
+        console.log(
+          "\n\nMetamsk login by passign the signature error\n\n",
+          err
+        );
+      });
+    // // ! Fetch local token
+    // customAxios
+    //   .post("auth/metamask", {
+    //     publicAddress: account.address,
+    //   })
+    //   .then((res) => {
+    //     console.log("temptoken");
+    //     // ! Sign the one time nonce
+    //     signMessage({
+    //       message: `I am signing my one-time nonce: ${res.data.message}`,
+    //     })
+    //       .then((signingResponse) => {
+    //         console.log("signingResponse", signingResponse);
+    //         // ! Metamsk login by passign the signature
+    //         customAxios
+    //           .post("auth/metamask/login", {
+    //             isWalletConnect: false,
+    //             token: `Bearer ${res.data.token}`,
+    //             signature: signingResponse,
+    //           })
+    //           .then((res) => {
+    //             console.log("meta login resp");
+    //             // ! Store the access token on LS
+    //             window.localStorage.setItem(
+    //               "access_token",
+    //               res.data.access_token
+    //             );
+    //             userContext.setUserContext({ isSigned: true });
+    //             router.replace("/schedule");
+    //             setIsSigning(false);
+    //           })
+    //           // ! Metamsk login by passign the signature error
+    //           .catch((err) => {
+    //             console.log(
+    //               "\n\nMetamsk login by passign the signature error\n\n",
+    //               err
+    //             );
+    //           });
+    //       })
+    //       // ! Sign the one time nonce error
+    //       .catch((err) => {
+    //         toast.error("Signing failed");
+    //         setIsSigning("FAILED");
+    //         console.log("\n\nSign the one time nonce error\n\n", err);
+    //       });
+    //   })
+    //   // ! Fetch local token error
+    //   .catch((err) => console.log("\n\nFetch local token error\n\n", err));
   };
   // ! Effects ****************************************************************************************************************
   useEffect(() => {
     console.log("running", account, userContext.isSigned);
-    if (account.isConnected && !userContext.isSigned) {
+    if (account.isConnected) {
       signMessageForToken();
     }
   }, [account.isConnected]);
