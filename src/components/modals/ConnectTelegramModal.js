@@ -14,7 +14,6 @@ export default function ConnectTelegramModal({ open, setOpen }) {
   const { pathname } = useRouter();
   const handleTelegramResponse = (response) => {
     console.log(response);
-    userContext.setUserContext({ telegramDetails: response });
     customAxios
       .patch(
         "/users/update",
@@ -28,7 +27,13 @@ export default function ConnectTelegramModal({ open, setOpen }) {
         },
         { headers: { workspace: "2" } }
       )
-      .then((res) => console.log("res", res))
+      .then((res) => {
+        userContext.setUserContext({
+          userDetails: res.data[0],
+          telegramDetails: response,
+        });
+        console.log("res", res);
+      })
       .catch((err) => console.log("err", err));
     setOpen(false);
   };

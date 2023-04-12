@@ -2,13 +2,17 @@ import { Dialog, Transition } from "@headlessui/react";
 import React, { Fragment, useEffect, useState } from "react";
 import QrScan from "react-qr-reader";
 import QrScanner from "qr-scanner";
+import { useRouter } from "next/router";
 function QRReaderModal({ open, setOpen }) {
   const [qrscan, setQrscan] = useState("No result");
+  const router = useRouter();
   const handleScan = (data) => {
     try {
       if (data) {
         console.log(data);
         setQrscan(data);
+        router.push(data);
+        setOpen(false);
       }
     } catch (error) {
       console.error(error);

@@ -3,23 +3,23 @@ import React, { useContext } from "react";
 import { SocialIcon } from "react-social-icons";
 import QRCode from "react-qr-code";
 function MyProfile() {
-  const { telegramDetails } = useContext(UserContext);
+  const { userDetails } = useContext(UserContext);
   let myPoaps = [
-    { iconUrl: telegramDetails?.photo_url, poapName: "Poap " },
-    { iconUrl: telegramDetails?.photo_url, poapName: "Poap " },
-    { iconUrl: telegramDetails?.photo_url, poapName: "Poap " },
-    { iconUrl: telegramDetails?.photo_url, poapName: "Poap " },
-    { iconUrl: telegramDetails?.photo_url, poapName: "Poap " },
-    { iconUrl: telegramDetails?.photo_url, poapName: "Poap " },
-    { iconUrl: telegramDetails?.photo_url, poapName: "Poap " },
-    { iconUrl: telegramDetails?.photo_url, poapName: "Poap " },
-    { iconUrl: telegramDetails?.photo_url, poapName: "Poap " },
-    { iconUrl: telegramDetails?.photo_url, poapName: "Poap " },
-    { iconUrl: telegramDetails?.photo_url, poapName: "Poap " },
-    { iconUrl: telegramDetails?.photo_url, poapName: "Poap " },
-    { iconUrl: telegramDetails?.photo_url, poapName: "Poap " },
-    { iconUrl: telegramDetails?.photo_url, poapName: "Poap " },
-    { iconUrl: telegramDetails?.photo_url, poapName: "Poap " },
+    { iconUrl: userDetails?.profile_picture, poapName: "Poap " },
+    { iconUrl: userDetails?.profile_picture, poapName: "Poap " },
+    { iconUrl: userDetails?.profile_picture, poapName: "Poap " },
+    { iconUrl: userDetails?.profile_picture, poapName: "Poap " },
+    { iconUrl: userDetails?.profile_picture, poapName: "Poap " },
+    { iconUrl: userDetails?.profile_picture, poapName: "Poap " },
+    { iconUrl: userDetails?.profile_picture, poapName: "Poap " },
+    { iconUrl: userDetails?.profile_picture, poapName: "Poap " },
+    { iconUrl: userDetails?.profile_picture, poapName: "Poap " },
+    { iconUrl: userDetails?.profile_picture, poapName: "Poap " },
+    { iconUrl: userDetails?.profile_picture, poapName: "Poap " },
+    { iconUrl: userDetails?.profile_picture, poapName: "Poap " },
+    { iconUrl: userDetails?.profile_picture, poapName: "Poap " },
+    { iconUrl: userDetails?.profile_picture, poapName: "Poap " },
+    { iconUrl: userDetails?.profile_picture, poapName: "Poap " },
   ];
   return (
     <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 mt-10 rounded-lg drop-shadow-lg">
@@ -28,19 +28,17 @@ function MyProfile() {
           <div className="sm:flex">
             <div className="flex flex-col w-full items-center">
               <img
-                src={telegramDetails?.photo_url}
+                src={userDetails?.profile_picture}
                 alt=""
                 className="w-16 rounded-full shadow-lg drop-shadow-lg"
               />
               <h4 className="text-4xl my-3 text-purple-900 font-bold">
-                {telegramDetails?.first_name} {telegramDetails?.last_name}
+                {userDetails?.first_name} {userDetails?.last_name}
               </h4>
             </div>
             <div className="mb-4 flex justify-center sm:mb-0 sm:mr-4">
-              {telegramDetails && (
-                <QRCode
-                  value={`https://www.t.me/${telegramDetails?.username}`}
-                />
+              {userDetails && (
+                <QRCode value={`https://www.t.me/${userDetails?.user_name}`} />
               )}
             </div>
             <div className="flex items-center mx-auto w-full justify-center">

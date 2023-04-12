@@ -106,7 +106,6 @@ export default function Home() {
   };
   // ! Effects ****************************************************************************************************************
   useEffect(() => {
-    console.log("running", account, userContext.isSigned);
     if (account.isConnected) {
       signMessageForToken();
     }
@@ -116,9 +115,10 @@ export default function Home() {
     if (switchNetwork && chainid !== 137) switchNetwork(137);
   }, [chainid, switchNetwork]);
   useEffect(() => {
-    if (account.isConnected && userContext.isSigned) {
-      if (!userContext.telegramDetails) router.replace("/schedule");
-      else setIsTelegramModalOpen(true);
+    if (account.isConnected) {
+      if (!userContext.telegramDetails) {
+        router.replace("/schedule");
+      } else setIsTelegramModalOpen(true);
     }
   }, [userContext.isSigned, userContext.telegramDetails]);
 
