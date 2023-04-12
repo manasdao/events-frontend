@@ -5,8 +5,9 @@ import Link from "next/link";
 import React, { useContext } from "react";
 import { SocialIcon } from "react-social-icons";
 
-function SpeakerProfile({ speakerDetails }) {
+function SponsorProfile({ sponsordetails }) {
   const { telegramDetails } = useContext(UserContext);
+  console.log("\n\nsponsordetails\n\n", sponsordetails);
   let myPoaps = [
     { iconUrl: telegramDetails?.photo_url, poapName: "Poap " },
     { iconUrl: telegramDetails?.photo_url, poapName: "Poap " },
@@ -36,7 +37,7 @@ function SpeakerProfile({ speakerDetails }) {
                 className="w-16 rounded-full shadow-lg drop-shadow-lg"
               />
               <h4 className="text-4xl my-3 text-purple-900 font-bold">
-                {speakerDetails.fields?.Name}
+                {sponsordetails.fields?.Name}
               </h4>
             </div>
             <div className="mb-4 flex justify-center sm:mb-0 sm:mr-4">
@@ -48,42 +49,66 @@ function SpeakerProfile({ speakerDetails }) {
             </div>
             <div className="flex items-center mx-auto w-full justify-center">
               <SocialIcon
-                url="https://twitter.com/tripathigrows"
+                url={sponsordetails.fields.Twitter}
                 className="mx-4"
               />
               <SocialIcon
-                url="https://www.linkedin.com/in/manas-tripathi-dev/"
+                url={sponsordetails.fields.calendly}
+                network="email"
+                bgColor="rgb(147 197 253)"
                 className="mx-4"
               />
-              <SocialIcon url="https://www.t.me/scotch1998" className="mx-4" />
+              <SocialIcon
+                url={"https://www.t.me/scotch1998"}
+                className="mx-4"
+              />
+              {sponsordetails.fields?.Phone && (
+                <Link
+                  className="mx-4"
+                  href={`tel:${sponsordetails.fields.Phone}`}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="w-12 h-12 bg-cyan-900 rounded-full p-2"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M1.5 4.5a3 3 0 013-3h1.372c.86 0 1.61.586 1.819 1.42l1.105 4.423a1.875 1.875 0 01-.694 1.955l-1.293.97c-.135.101-.164.249-.126.352a11.285 11.285 0 006.697 6.697c.103.038.25.009.352-.126l.97-1.293a1.875 1.875 0 011.955-.694l4.423 1.105c.834.209 1.42.959 1.42 1.82V19.5a3 3 0 01-3 3h-2.25C8.552 22.5 1.5 15.448 1.5 6.75V4.5z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </Link>
+              )}
             </div>
             <div>
-              {speakerDetails.fields?.Bio && (
+              {sponsordetails.fields?.Bio && (
                 <>
                   <h4 className="text-lg text-gray-200 font-bold">Bio</h4>
                   <p className="mt-1 text-purple-300">
-                    {speakerDetails.fields.Bio}
+                    {sponsordetails.fields.Bio}
                   </p>
                 </>
               )}
-              {speakerDetails.fields?.ScheduleName?.length > 0 && (
+              {sponsordetails.fields?.ScheduleName?.length > 0 && (
                 <>
                   <h4 className="text-lg text-gray-200 font-bold mt-4">
                     Talks
                   </h4>
                   <ol className="flex flex-col items-left">
-                    {speakerDetails.fields.ScheduleName.map(
+                    {sponsordetails.fields.ScheduleName.map(
                       (singleTalk, index) => {
                         return (
-                          <li key={speakerDetails.fields.Schedule[index]}>
+                          <li key={sponsordetails.fields.Schedule[index]}>
                             <Link
                               className="mt-1 text-purple-300 flex items-center"
-                              href={`/event/${speakerDetails.fields.Schedule[index]}`}
+                              href={`/event/${sponsordetails.fields.Schedule[index]}`}
                             >
                               {giveRandomIcon()} {singleTalk}{" "}
                               <ArrowTopRightOnSquareIcon
+                                className="inline  ml-2"
                                 width={16}
-                                className="inline ml-2"
                               />
                             </Link>
                           </li>
@@ -93,19 +118,19 @@ function SpeakerProfile({ speakerDetails }) {
                   </ol>
                 </>
               )}
-              {speakerDetails.fields["Side Events Names"]?.length > 0 && (
+              {sponsordetails.fields["Side Events Names"]?.length > 0 && (
                 <>
                   <h4 className="text-lg text-gray-200 font-bold mt-4">
                     Side Events
                   </h4>
                   <ol className="flex flex-col items-left">
-                    {speakerDetails.fields["Side Events Names"].map(
+                    {sponsordetails.fields["Side Events Names"].map(
                       (singleEvent, index) => {
                         return (
-                          <li key={speakerDetails.fields["Side Events"][index]}>
+                          <li key={sponsordetails.fields["Side Events"][index]}>
                             <Link
                               className="mt-1 text-purple-300 flex items-center"
-                              href={`/event/${speakerDetails.fields["Side Events"][index]}`}
+                              href={`/event/${sponsordetails.fields["Side Events"][index]}`}
                             >
                               {giveRandomIcon()} {singleEvent}{" "}
                               <ArrowTopRightOnSquareIcon
@@ -148,4 +173,4 @@ function SpeakerProfile({ speakerDetails }) {
   );
 }
 
-export default SpeakerProfile;
+export default SponsorProfile;

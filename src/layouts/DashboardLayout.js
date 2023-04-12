@@ -13,6 +13,7 @@ import {
   QuestionMarkCircleIcon,
   ChatBubbleLeftIcon,
   CurrencyDollarIcon,
+  QrCodeIcon,
 } from "@heroicons/react/24/outline";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import { Web3Button } from "@web3modal/react";
@@ -21,11 +22,20 @@ import Link from "next/link";
 import { UserContext } from "@/contexts/UserContextProvider";
 import { useRouter } from "next/router";
 import { mixpanel } from "@/utils/mixpanel";
+import customAxios from "@/utils/axios";
+import { giveRandomIcon, linkGenerator } from "@/utils/helpers";
+import moment from "moment/moment";
+import QRReaderModal from "@/components/modals/QRReaderModal";
 const navigation = [
-  { name: "Explore DAO-CON", href: "/explore", icon: GlobeAltIcon, current: false },
+  {
+    name: "Explore DAO-CON",
+    href: "/explore",
+    icon: GlobeAltIcon,
+    current: false,
+  },
   {
     name: "Sponsors",
-    href: "/sponsors",
+    href: "/sponsor",
     icon: CurrencyDollarIcon,
     current: false,
   },
@@ -63,8 +73,19 @@ export default function DashboardLayout({
   const userContext = useContext(UserContext);
   // ! Local states ****************************************************************************************************************
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [announcements, setAnnouncements] = useState(null);
+  const [qrModalOpen, setQrModalOpen] = useState(false);
   // ! Local helpers ****************************************************************************************************************
-
+  const fetchAnnouncements = () => {
+    customAxios
+      .get(`/announcement/fetch?newAnnouncements=true`, {
+        headers: { workspace: "2" },
+      })
+      .then((res) => {
+        setAnnouncements(res.data.announcements);
+      })
+      .catch((err) => console.log("err", err));
+  };
   // ! Effects ****************************************************************************************************************
 
   useEffect(() => {
@@ -84,7 +105,9 @@ export default function DashboardLayout({
         triggered_location: "page",
       });
   }, [account]);
-
+  useEffect(() => {
+    fetchAnnouncements();
+  }, [userContext.pollAnnouncements]);
   // ! Console logs ****************************************************************************************************************
   if (account?.isConnecting || account?.isReconnecting) return;
 
@@ -277,7 +300,7 @@ export default function DashboardLayout({
       </div>
 
       <div className="lg:pl-72">
-        <div className="fixed top-0 w-full shadow-xl z-40 flex h-12 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
+        <div className="fixed top-0 w-full z-40 flex h-12 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
           <button
             type="button"
             className="-m-2.5 p-2.5 text-gray-700 lg:hidden"
@@ -315,14 +338,29 @@ export default function DashboardLayout({
               <div></div>
             )}
             <div className="flex items-center gap-x-4 lg:gap-x-6">
-              <button
-                type="button"
-                className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500"
-              >
+              <QrCodeIcon
+                width={24}
+                color="rgb(17 24 39)"
+                onClick={() => {
+                  setQrModalOpen(true);
+                }}
+              />
+              <button type="button" className="-m-2.5 p-2.5 text-gray-400">
                 <span className="sr-only">View notifications</span>
-                <BellIcon className="h-6 w-6" aria-hidden="true" />
-                {/* <Popover className="relative">
-                  <Popover.Button>
+                <Popover className="relative">
+                  <Popover.Button className="flex items-center ">
+                    <BellIcon
+                      className="h-6 w-6"
+                      aria-hidden="true"
+                      color={
+                        announcements?.length > 0 ? "rgb(153 27 27)" : "normal"
+                      }
+                    />
+                    {announcements && (
+                      <span class="absolute -top-2 left-[70%] z-50 inline-flex items-center rounded-full bg-red-100 px-1.5 py-0.5 text-[8px] font-medium text-red-800">
+                        {announcements.length}
+                      </span>
+                    )}
                   </Popover.Button>
                   <Transition
                     as={Fragment}
@@ -333,47 +371,55 @@ export default function DashboardLayout({
                     leaveFrom="opacity-100 translate-y-0"
                     leaveTo="opacity-0 translate-y-1"
                   >
-                    <Popover.Panel className="absolute -right-0 z-10 mt-6 flex w-[92vw] max-w-max ">
-                      <div className="w-screen max-w-md flex-auto overflow-hidden rounded-3xl bg-purple-100 text-sm leading-6 shadow-lg ring-1 ring-gray-900/5">
-                        <div className="block">
-                          <nav className="flex space-x-4" aria-label="Tabs">
-                            <a
-                              key={"Host"}
-                              href={"#"}
-                              className={classNames(
-                                true
-                                  ? "bg-indigo-100 text-indigo-700"
-                                  : "text-gray-500 hover:text-gray-700",
-                                "rounded-md px-3 py-2 text-sm font-medium"
-                              )}
-                              aria-current={true ? "page" : undefined}
-                            >
-                              Host
-                            </a>
-                            <a
-                              key={"Event"}
-                              href={"#"}
-                              className={classNames(
-                                false
-                                  ? "bg-indigo-100 text-indigo-700"
-                                  : "text-gray-500 hover:text-gray-700",
-                                "rounded-md px-3 py-2 text-sm font-medium"
-                              )}
-                              aria-current={false ? "page" : undefined}
-                            >
-                              Event
-                            </a>
-                          </nav>
-                          Lorem ipsum dolor, sit amet consectetur adipisicing
-                          elit. Sint exercitationem eligendi similique excepturi
-                          tenetur totam incidunt ipsam quasi praesentium
-                          molestiae, eveniet, asperiores impedit enim. Enim
-                          tempora impedit officia natus non.
+                    <Popover.Panel className="absolute -right-0 z-10 mt-6 flex w-[92vw] max-w-[360px] ">
+                      <div className="w-screen max-w-md flex-auto overflow-hidden rounded-lg bg-purple-100 text-sm leading-6 shadow-lg ring-1 ring-gray-900/5">
+                        <div className="flex flex-col items-left w-full pt-2 pb-4">
+                          <span className="text-2xl pl-6 block my-4 font-semibold text-left text-purple-950">
+                            Announcements
+                          </span>
+                          {announcements?.length > 0 &&
+                            announcements.map((singleAnnouncement, index) => {
+                              return (
+                                <>
+                                  <Link
+                                    href={linkGenerator(
+                                      singleAnnouncement.type,
+                                      singleAnnouncement.airtableId
+                                    )}
+                                    key={singleAnnouncement.id}
+                                    className="w-full grid items-center px-4"
+                                    style={{
+                                      gridTemplateColumns: "1fr 6fr 3fr",
+                                    }}
+                                  >
+                                    <span className="text-2xl">
+                                      {giveRandomIcon()}
+                                    </span>
+                                    <div className="flex flex-col items-left ml-4">
+                                      <span className="text-purple-950 text-lg text-left font-medium">
+                                        {singleAnnouncement.title}
+                                      </span>
+                                      <span className="text-purple-600 text-left">
+                                        {singleAnnouncement.description}
+                                      </span>
+                                    </div>
+                                    <span className="self-end justify-self-end">
+                                      {moment(
+                                        singleAnnouncement.createdAt
+                                      ).format("HH:MM A")}
+                                    </span>
+                                  </Link>{" "}
+                                  {index !== announcements.length - 1 && (
+                                    <hr class="my-2 h-px border-t-0 bg-transparent bg-gradient-to-r from-transparent via-neutral-500 to-transparent opacity-25 dark:opacity-100" />
+                                  )}{" "}
+                                </>
+                              );
+                            })}
                         </div>
                       </div>
                     </Popover.Panel>
                   </Transition>
-                </Popover> */}
+                </Popover>
               </button>
               <div
                 className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10"
@@ -454,6 +500,7 @@ export default function DashboardLayout({
           </Link>
         </span>
       </div>
+      <QRReaderModal open={qrModalOpen} setOpen={setQrModalOpen} />
     </div>
   );
 }

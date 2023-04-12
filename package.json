@@ -28,6 +28,8 @@
     "next-pwa": "^5.6.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-qr-code": "^2.0.11",
+    "react-qr-reader": "^3.0.0-beta-1",
     "react-social-icons": "^5.15.0",
     "react-telegram-login": "^1.1.2",
     "react-toastify": "^9.1.2",
