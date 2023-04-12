@@ -1,8 +1,24 @@
 import { Dialog, Transition } from "@headlessui/react";
-import React, { Fragment, useState } from "react";
-import { QrReader } from "react-qr-reader";
+import React, { Fragment, useEffect, useState } from "react";
+import QrScan from "react-qr-reader";
+import QrScanner from "qr-scanner";
 function QRReaderModal({ open, setOpen }) {
-  const [data, setData] = useState("No result");
+  const [qrscan, setQrscan] = useState("No result");
+  const handleScan = (data) => {
+    try {
+      if (data) {
+        console.log(data);
+        setQrscan(data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const handleError = (err) => {
+    console.error(err);
+  };
+  // ! Local helpers
+
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog
@@ -36,19 +52,13 @@ function QRReaderModal({ open, setOpen }) {
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
               <Dialog.Panel className="relative transform overflow-hidden  w-full rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
-                <QrReader
-                  onResult={(result, error) => {
-                    if (!!result) {
-                      setData(result?.text);
-                    }
-
-                    if (!!error) {
-                      console.info(error);
-                    }
-                  }}
-                  style={{ width: "100%" }}
+                <QrScan
+                  delay={300}
+                  onError={handleError}
+                  onScan={handleScan}
+                  style={{ height: "100%", width: "100%" }}
                 />
-                <p>{data}</p>
+                <p>{qrscan}</p>
               </Dialog.Panel>
             </Transition.Child>
           </div>

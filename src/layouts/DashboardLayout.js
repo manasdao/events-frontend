@@ -25,7 +25,15 @@ import { mixpanel } from "@/utils/mixpanel";
 import customAxios from "@/utils/axios";
 import { giveRandomIcon, linkGenerator } from "@/utils/helpers";
 import moment from "moment/moment";
-import QRReaderModal from "@/components/modals/QRReaderModal";
+// import QRReaderModal from "@/components/modals/QRReaderModal";
+import dynamic from "next/dynamic";
+const DynamicQrReader = dynamic(
+  () => import("@/components/modals/QRReaderModal"),
+  {
+    loading: () => <p>Loading...</p>,
+    ssr: false,
+  }
+);
 const navigation = [
   {
     name: "Explore DAO-CON",
@@ -500,7 +508,7 @@ export default function DashboardLayout({
           </Link>
         </span>
       </div>
-      <QRReaderModal open={qrModalOpen} setOpen={setQrModalOpen} />
+      <DynamicQrReader open={qrModalOpen} setOpen={setQrModalOpen} />
     </div>
   );
 }
