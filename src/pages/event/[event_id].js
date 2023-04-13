@@ -8,16 +8,16 @@ import moment from "moment";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-export const pickEventForUser = (eventId) => {
+export const pickEventForUser = (eventId, isSideEvent, name) => {
   return customAxios.post(
     "/events/pickevent",
-    { eventId },
+    { eventId, isSideEvent, name },
     { headers: { workspace: "2" } }
   );
 };
 function SingleEvent() {
   // ! Hooks
-  const { query, pathname } = useRouter();
+  const { query, pathname, replace } = useRouter();
   // ! Local states
   const [eventDetails, setEventDetails] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -33,6 +33,7 @@ function SingleEvent() {
         setLoading(false);
       })
       .catch((err) => {
+        if (err?.response?.status == 403) replace("/tickets");
         console.log("err", err);
         setLoading(false);
       });
@@ -115,9 +116,16 @@ function SingleEvent() {
                 class="inline-flex items-center gap-x-2 rounded-md bg-indigo-100 px-3.5 py-2.5 text-md font-medium text-purple-700 shadow-sm hover:bg-indigo-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-200"
                 onClick={() => {
                   setLoading(true);
-                  pickEventForUser(query.event_id)
+                  pickEventForUser(
+                    query.event_id,
+                    eventDetails.fields["Is Side Event"] || false,
+                    eventDetails.fields.Activity
+                  )
                     .then(fetchSingleEvent)
-                    .catch((err) => console.log("err", err));
+                    .catch((err) => {
+                      if (err?.response?.status == 403) replace("/tickets");
+                      console.log("err", err);
+                    });
                   mixpanel("mark_as_interested", {
                     source_page: pathname,
                     triggered_location: "single_event_page",

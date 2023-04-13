@@ -7,8 +7,8 @@ import {
   w3mProvider,
 } from "@web3modal/ethereum";
 import { Web3Modal, useWeb3ModalTheme } from "@web3modal/react";
-import { useEffect, useState } from "react";
-import { configureChains, createClient, WagmiConfig } from "wagmi";
+import { useContext, useEffect, useState } from "react";
+import { configureChains, createClient, useAccount, WagmiConfig } from "wagmi";
 import {
   arbitrum,
   avalanche,
@@ -19,7 +19,9 @@ import {
   optimism,
   polygon,
 } from "wagmi/chains";
-import UserContextProvider from "@/contexts/UserContextProvider";
+import UserContextProvider, {
+  UserContext,
+} from "@/contexts/UserContextProvider";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 if (!process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID) {
@@ -49,8 +51,13 @@ const wagmiClient = createClient({
 // 3. Configure modal ethereum client
 const ethereumClient = new EthereumClient(wagmiClient, chains);
 export default function App({ Component, pageProps }) {
+  // ! Contexts
+  const userContext = useContext(UserContext);
+  // ! Local states
   const [ready, setReady] = useState(false);
+  const { isDisconnected } = useAccount();
   const { theme, setTheme } = useWeb3ModalTheme();
+
   useEffect(() => {
     setReady(true);
     mixpanel.init(process.env.NEXT_PUBLIC_MIXPANEL_KEY, { debug: true });

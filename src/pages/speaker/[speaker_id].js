@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
 function Speaker() {
-  const { query } = useRouter();
+  const { query, replace } = useRouter();
   const [speakerDetails, setSpeakerDetails] = useState(null);
 
   useEffect(() => {
@@ -19,6 +19,7 @@ function Speaker() {
           setSpeakerDetails(res.data);
         })
         .catch((err) => {
+          if (err?.response?.status == 403) replace("/tickets");
           console.log("err", err);
         });
   }, [query.speaker_id]);

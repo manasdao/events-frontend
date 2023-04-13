@@ -2,8 +2,10 @@ import DashboardLayout from "@/layouts/DashboardLayout";
 import EventsFeed from "@/components/events/EventsFeed";
 import customAxios from "@/utils/axios";
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 function Events() {
+  const router = useRouter();
   // ! Local states
   const [allEvents, setAllEvents] = useState(null);
   // ! Local handlers
@@ -17,6 +19,7 @@ function Events() {
         setAllEvents(res.data);
       })
       .catch((err) => {
+        if (err?.response?.status == 403) router.replace("/tickets");
         console.log("err", err);
       });
   };

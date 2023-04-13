@@ -7,10 +7,12 @@ import { UserContext } from "@/contexts/UserContextProvider";
 import ConnectTelegramModal from "@/components/modals/ConnectTelegramModal";
 import EventsFeed from "@/components/events/EventsFeed";
 import customAxios from "@/utils/axios";
+import { useRouter } from "next/router";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Schedule() {
+  const router = useRouter();
   const userContext = useContext(UserContext);
   const [isTelegramModalOpen, setIsTelegramModalOpen] = useState(false);
   const [allEvents, setAllEvents] = useState(null);
@@ -26,6 +28,7 @@ export default function Schedule() {
         setAllEvents(res.data);
       })
       .catch((err) => {
+        if (err?.response?.status == 403) router.replace("/tickets");
         console.log("err", err);
       });
   }, []);

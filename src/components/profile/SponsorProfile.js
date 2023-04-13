@@ -36,7 +36,7 @@ function SponsorProfile({ sponsordetails }) {
                 alt=""
                 className="w-16 rounded-full shadow-lg drop-shadow-lg"
               />
-              <h4 className="text-4xl my-3 text-purple-900 font-bold">
+              <h4 className="text-4xl my-3 text-purple-900 font-bold  text-center">
                 {sponsordetails.fields?.Name}
               </h4>
             </div>

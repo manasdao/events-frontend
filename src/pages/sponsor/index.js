@@ -8,8 +8,10 @@ import {
 import { BoltIcon as BoltIconSolid } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { giveRandomIcon } from "@/utils/helpers";
+import { useRouter } from "next/router";
 
 function Sponsors() {
+  const { replace } = useRouter();
   // ! Local states
   const [allSponsors, setAllSponsors] = useState(null);
   // ! Local handlers
@@ -23,6 +25,7 @@ function Sponsors() {
         setAllSponsors(res.data);
       })
       .catch((err) => {
+        if (err?.response?.status == 403) replace("/tickets");
         console.log("err", err);
       });
   };

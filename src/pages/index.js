@@ -50,6 +50,7 @@ export default function Home() {
       })
       // ! Metamsk login by passign the signature error
       .catch((err) => {
+        if (err?.response?.status == 403) router.replace("/tickets");
         console.log(
           "\n\nMetamsk login by passign the signature error\n\n",
           err
@@ -116,11 +117,11 @@ export default function Home() {
   }, [chainid, switchNetwork]);
   useEffect(() => {
     if (account.isConnected) {
-      if (!userContext.telegramDetails) {
+      if (userContext.telegramDetails) {
         router.replace("/schedule");
       } else setIsTelegramModalOpen(true);
     }
-  }, [userContext.isSigned, userContext.telegramDetails]);
+  }, [userContext.telegramDetails]);
 
   return (
     <>

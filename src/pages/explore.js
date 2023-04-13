@@ -2,9 +2,11 @@ import DashboardLayout from "@/layouts/DashboardLayout";
 import customAxios from "@/utils/axios";
 import { PhoneArrowUpRightIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
 function Explore() {
+  const router = useRouter();
   // ! Local states
   const [sideEvents, setSideEvents] = useState(null);
   const [hotels, setHotels] = useState(null);
@@ -20,6 +22,7 @@ function Explore() {
         setSideEvents(res.data);
       })
       .catch((err) => {
+        if (err?.response?.status == 403) router.replace("/tickets");
         console.log("err", err);
       });
   };
@@ -33,6 +36,7 @@ function Explore() {
         setHotels(res.data);
       })
       .catch((err) => {
+        if (err?.response?.status == 403) router.replace("/tickets");
         console.log("err", err);
       });
   };

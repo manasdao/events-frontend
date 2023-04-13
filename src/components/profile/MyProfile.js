@@ -32,7 +32,7 @@ function MyProfile() {
                 alt=""
                 className="w-16 rounded-full shadow-lg drop-shadow-lg"
               />
-              <h4 className="text-4xl my-3 text-purple-900 font-bold">
+              <h4 className="text-4xl my-3 text-purple-900 font-bold text-center">
                 {userDetails?.first_name} {userDetails?.last_name}
               </h4>
             </div>

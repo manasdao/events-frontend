@@ -14,11 +14,12 @@ function EventsFeed({
   canMarkInterested,
   fetchAllEvents,
 }) {
-  const { pathname } = useRouter();
+  const { pathname, replace } = useRouter();
   const [loading, setLoading] = useState(false);
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
   }
+
   useEffect(() => {
     setLoading(false);
   }, [allEvents]);
@@ -144,11 +145,18 @@ function EventsFeed({
                                     onClick={(ev) => {
                                       ev.stopPropagation();
                                       setLoading(activityItem?.id);
-                                      pickEventForUser(activityItem?.id)
+                                      pickEventForUser(
+                                        activityItem?.id,
+                                        activityItem.fields["Is Side Event"] ||
+                                          false,
+                                        activityItem.fields.Activity
+                                      )
                                         .then(fetchAllEvents)
-                                        .catch((err) =>
-                                          console.log("err", err)
-                                        );
+                                        .catch((err) => {
+                                          if (err?.response?.status == 403)
+                                            replace("/tickets");
+                                          console.log("err", err);
+                                        });
                                       mixpanel("mark_as_interested", {
                                         source_page: pathname,
                                         triggered_location: "events_feed_card",

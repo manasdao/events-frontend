@@ -1,5 +1,5 @@
 import { Fragment, useContext, useEffect, useState } from "react";
-import { Dialog, Menu, Transition, Popover } from "@headlessui/react";
+import { Dialog, Listbox, Transition, Popover } from "@headlessui/react";
 import {
   Bars3Icon,
   BellIcon,
@@ -15,7 +15,11 @@ import {
   CurrencyDollarIcon,
   QrCodeIcon,
 } from "@heroicons/react/24/outline";
-import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
+import {
+  MagnifyingGlassIcon,
+  CheckIcon,
+  ChevronUpDownIcon,
+} from "@heroicons/react/20/solid";
 import { Web3Button } from "@web3modal/react";
 import { useChainId, useSwitchNetwork, useAccount } from "wagmi";
 import Link from "next/link";
@@ -25,7 +29,6 @@ import { mixpanel } from "@/utils/mixpanel";
 import customAxios from "@/utils/axios";
 import { giveRandomIcon, linkGenerator } from "@/utils/helpers";
 import moment from "moment/moment";
-// import QRReaderModal from "@/components/modals/QRReaderModal";
 import dynamic from "next/dynamic";
 const DynamicQrReader = dynamic(
   () => import("@/components/modals/QRReaderModal"),
@@ -83,6 +86,9 @@ export default function DashboardLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [announcements, setAnnouncements] = useState(null);
   const [qrModalOpen, setQrModalOpen] = useState(false);
+  const [selected, setSelected] = useState(null);
+  const [searchTerm, setSearchTerm] = useState(null);
+  const [searchresults, setSearchresults] = useState(null);
   // ! Local helpers ****************************************************************************************************************
   const fetchAnnouncements = () => {
     customAxios
@@ -92,7 +98,30 @@ export default function DashboardLayout({
       .then((res) => {
         setAnnouncements(res.data.announcements);
       })
-      .catch((err) => console.log("err", err));
+      .catch((err) => {
+        if (err?.response?.status == 403) router.replace("/tickets");
+        console.log("announcement err", err);
+      });
+  };
+  const fetchSearchResults = () => {
+    let searchType = "";
+    if (router.pathname.includes("events"))
+      searchType = "&searchType=EVENTS&searchType=SPEAKERS&searchType=SPONSORS";
+    if (router.pathname.includes("explore"))
+      searchType = "&searchType=EVENTS&searchType=HOTELS&searchType=SPONSORS";
+
+    customAxios
+      .get(`/airtable/search?keyword=${searchTerm}${searchType}`, {
+        headers: { workspace: "2" },
+      })
+      .then((res) => {
+        setSearchresults(res.data);
+        console.log("search res", res);
+      })
+      .catch((err) => {
+        if (err?.response?.status == 403) router.replace("/tickets");
+        console.log("err", err);
+      });
   };
   // ! Effects ****************************************************************************************************************
 
@@ -326,21 +355,240 @@ export default function DashboardLayout({
 
           <div className="flex flex-1 gap-x-4 justify-between self-stretch lg:gap-x-6">
             {canSearch ? (
-              <form className="relative flex flex-1" action="#" method="GET">
-                <label htmlFor="search-field" className="sr-only">
-                  Search
-                </label>
-                <MagnifyingGlassIcon
-                  className="pointer-events-none absolute inset-y-0 left-0 h-full w-4 text-gray-400"
-                  aria-hidden="true"
-                />
-                <input
-                  id="search-field"
-                  className="block h-full w-full border-0 py-0 pl-8 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm"
-                  placeholder="Looking for something?"
-                  type="search"
-                  name="search"
-                />
+              <form className="relative flex w-full" action="#" method="GET">
+                <Listbox value={selected} onChange={setSelected}>
+                  {({ open }) => (
+                    <>
+                      <div className="relative w-full">
+                        <div className="flex items-center justify-between w-full h-full">
+                          <label htmlFor="search-field" className="sr-only">
+                            Search
+                          </label>
+                          <input
+                            id="search-field"
+                            className="block h-full w-full border-0 py-0 pl-0 pr-0 text-gray-900 placeholder:text-gray-400 text-sm focus:outline-none focus:border-none focus:ring-"
+                            placeholder="Looking for something?"
+                            type="search"
+                            name="search"
+                            value={searchTerm}
+                            onChange={(ev) => {
+                              setSearchTerm(ev.target.value);
+                            }}
+                          />
+                          <Listbox.Button
+                            onClick={fetchSearchResults}
+                            className="inline-flex items-center gap-x-1.5 px-2 py-1.5 text-sm font-semibold text-indigo-600"
+                          >
+                            <MagnifyingGlassIcon
+                              width={20}
+                              aria-hidden="true"
+                              color="rgb(17 24 39)"
+                            />
+                          </Listbox.Button>
+                        </div>
+
+                        <Transition
+                          show={open}
+                          as={Fragment}
+                          leave="transition ease-in duration-100"
+                          leaveFrom="opacity-100"
+                          leaveTo="opacity-0"
+                        >
+                          <Listbox.Options className="fixed z-10 mt-1 left-[0.5vw] max-h-[450px] w-[99vw] overflow-auto rounded-md bg-white py-1 text-base shadow-xl focus:outline-none sm:text-sm">
+                            {searchresults ? (
+                              <div>
+                                {searchresults.events && (
+                                  <div className="p-4">
+                                    <h3 className="text-indigo-900 font-semibold text-xl">
+                                      Events
+                                    </h3>
+                                    {searchresults.events.length > 0 ? (
+                                      <div>
+                                        {searchresults.events.map(
+                                          (singleResult) => {
+                                            return (
+                                              <div
+                                                key={singleResult.id}
+                                                onClick={() => {
+                                                  router.push(
+                                                    `/event/${singleResult.id}`
+                                                  );
+                                                }}
+                                                className="text-indigo-800 text-sm border-[1px] border-purple-950 rounded-lg p-2 my-2 flex items-center justify-between"
+                                              >
+                                                <span className="flex flex-col items-left">
+                                                  <span className="text-lg font-medium">
+                                                    {
+                                                      singleResult.fields
+                                                        .Activity
+                                                    }
+                                                  </span>
+                                                  <span>
+                                                    {
+                                                      singleResult.fields
+                                                        .Location
+                                                    }
+                                                  </span>
+                                                </span>
+                                                <span>
+                                                  {moment(
+                                                    singleResult.fields.Start
+                                                  ).format("HH:MM A")}
+                                                </span>
+                                              </div>
+                                            );
+                                          }
+                                        )}
+                                      </div>
+                                    ) : (
+                                      <span className="text-gray-500 text-sm">
+                                        No results for {searchTerm} in Events
+                                      </span>
+                                    )}
+                                  </div>
+                                )}
+                                {searchresults.speakers && (
+                                  <div className="p-4">
+                                    <h3 className="text-indigo-900 font-semibold text-lg">
+                                      Speakers
+                                    </h3>
+                                    {searchresults.speakers.length > 0 ? (
+                                      <div>
+                                        {searchresults.speakers.map(
+                                          (singleResult) => {
+                                            return (
+                                              <div
+                                                key={singleResult.id}
+                                                onClick={() => {
+                                                  router.push(
+                                                    `/speaker/${singleResult.id}`
+                                                  );
+                                                }}
+                                                className="text-indigo-800 text-sm border-[1px] border-purple-950 rounded-lg p-2 my-2 flex items-center justify-between"
+                                              >
+                                                <span className="flex flex-col items-left">
+                                                  <span className="text-lg font-medium">
+                                                    {singleResult.fields.Name}
+                                                  </span>
+                                                  <span>
+                                                    {singleResult.fields.Bio}
+                                                  </span>
+                                                </span>
+                                                <span></span>
+                                              </div>
+                                            );
+                                          }
+                                        )}
+                                      </div>
+                                    ) : (
+                                      <span className="text-gray-500 text-sm">
+                                        No results for {searchTerm} in Speakers
+                                      </span>
+                                    )}
+                                  </div>
+                                )}
+                                {searchresults.sponsors && (
+                                  <div className="p-4">
+                                    <h3 className="text-indigo-900 font-semibold text-lg">
+                                      Sponsors
+                                    </h3>
+                                    {searchresults.sponsors.length > 0 ? (
+                                      <div>
+                                        {searchresults.sponsors.map(
+                                          (singleResult) => {
+                                            return (
+                                              <div
+                                                key={singleResult.id}
+                                                onClick={() => {
+                                                  router.push(
+                                                    `/sponsor/${singleResult.id}`
+                                                  );
+                                                }}
+                                                className="text-indigo-800 text-sm border-[1px] border-purple-950 rounded-lg p-2 my-2 flex items-center justify-between"
+                                              >
+                                                <span className="flex flex-col items-left">
+                                                  <span className="text-lg font-medium">
+                                                    {singleResult.fields.Name}
+                                                  </span>
+                                                  <span>
+                                                    {singleResult.fields.Bio}
+                                                  </span>
+                                                </span>
+                                                <span></span>
+                                              </div>
+                                            );
+                                          }
+                                        )}
+                                      </div>
+                                    ) : (
+                                      <span className="text-gray-500 text-sm">
+                                        No results for {searchTerm} in Sponsors
+                                      </span>
+                                    )}
+                                  </div>
+                                )}
+                                {searchresults.hotels && (
+                                  <div className="p-4">
+                                    <h3 className="text-indigo-900 font-semibold text-lg">
+                                      Hotels
+                                    </h3>
+                                    {searchresults.hotels.length > 0 ? (
+                                      <div>
+                                        {searchresults.hotels.map(
+                                          (singleResult) => {
+                                            return (
+                                              <div
+                                                key={singleResult.id}
+                                                onClick={() => {
+                                                  router.push(
+                                                    `tel:${singleResult.fields.Contact}`
+                                                  );
+                                                }}
+                                                className="text-indigo-800 text-sm border-[1px] border-purple-950 rounded-lg p-2 my-2 flex items-center justify-between"
+                                              >
+                                                <span className="flex flex-col items-left">
+                                                  <span className="text-lg font-medium">
+                                                    {singleResult.fields.Name}
+                                                  </span>
+                                                  <span>
+                                                    {
+                                                      singleResult.fields
+                                                        .Address
+                                                    }
+                                                  </span>
+                                                </span>
+                                                <span></span>
+                                              </div>
+                                            );
+                                          }
+                                        )}
+                                      </div>
+                                    ) : (
+                                      <span className="text-gray-500 text-sm">
+                                        No results for {searchTerm} in Hotels
+                                      </span>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            ) : (
+                              <div className="w-full flex justify-center">
+                                <div
+                                  role="status"
+                                  className="w-full animate-pulse flex flex-col items-start bg-purple-100 px-2 pt-4 rounded-lg"
+                                >
+                                  <div className="h-6 my-1 bg-purple-200 rounded-full dark:bg-slate-700 w-20"></div>
+                                  <div className="h-12 my-1 bg-purple-200 rounded-lg dark:bg-slate-700 w-full mx-auto"></div>
+                                  <div className="h-12 my-1 bg-purple-200 rounded-lg dark:bg-slate-700 w-full mx-auto"></div>
+                                </div>
+                              </div>
+                            )}
+                          </Listbox.Options>
+                        </Transition>
+                      </div>
+                    </>
+                  )}
+                </Listbox>
               </form>
             ) : (
               <div></div>
