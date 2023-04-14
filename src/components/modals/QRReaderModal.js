@@ -1,18 +1,42 @@
 import { Dialog, Transition } from "@headlessui/react";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import QrScan from "react-qr-reader";
 import QrScanner from "qr-scanner";
 import { useRouter } from "next/router";
-function QRReaderModal({ open, setOpen }) {
+import customAxios from "@/utils/axios";
+import { toast } from "react-toastify";
+import { UserContext } from "@/contexts/UserContextProvider";
+function QRReaderModal({ open, setOpen, markAttendance }) {
   const [qrscan, setQrscan] = useState("No result");
   const router = useRouter();
+  const userContext = useContext(UserContext);
   const handleScan = (data) => {
     try {
       if (data) {
-        console.log(data);
+        console.log("qr scan data", data);
+        if (markAttendance) {
+          let dataToMarkAttendance = JSON.parse(data);
+          customAxios
+            .post("/events/addattendance", dataToMarkAttendance, {
+              headers: { workspace: "2" },
+            })
+            .then((res) => {
+              console.log("addattendance res", res.data);
+              setOpen(false);
+              toast.success("Marked attendace!");
+              userContext.fetchUserProfile();
+            })
+            .catch((err) => {
+              console.log("addattendance err", err);
+              setOpen(false);
+              // toast.error(err.response.data.error.message);
+              userContext.fetchUserProfile();
+            });
+        } else {
+          router.push(data);
+          setOpen(false);
+        }
         setQrscan(data);
-        router.push(data);
-        setOpen(false);
       }
     } catch (error) {
       console.error(error);

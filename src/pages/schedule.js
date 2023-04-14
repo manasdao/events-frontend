@@ -38,7 +38,11 @@ export default function Schedule() {
       </Head>
       <DashboardLayout currentTab="Schedule">
         <main>
-          <EventsFeed eventsTitle="My Schedule" allEvents={allEvents} />
+          <EventsFeed
+            eventsTitle="My Schedule"
+            allEvents={allEvents}
+            canMarkAttended
+          />
         </main>
       </DashboardLayout>
     </>

@@ -1,4 +1,5 @@
 import { POLLING_INTERVAL, USER_CONTEXT_BACKUP } from "@/constants";
+import customAxios from "@/utils/axios";
 import React, { createContext, useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 export const UserContext = createContext({});
@@ -20,6 +21,20 @@ function UserContextProvider({ children }) {
     let newState = { ...state, ...stateToUpdate };
     setState({ ...state, ...stateToUpdate });
     window.localStorage.setItem(USER_CONTEXT_BACKUP, JSON.stringify(newState));
+  };
+  const fetchUserProfile = () => {
+    if (state?.userDetails?.id)
+      customAxios
+        .get(`/users/fetchprofile?userId=${state.userDetails.id}`, {
+          headers: { workspace: "2" },
+        })
+        .then((res) => {
+          console.log("fetchprofile res", res.data);
+          setUserContext({ userProfile: res.data });
+        })
+        .catch((err) => {
+          console.log("fetchprofile err", err);
+        });
   };
   // ! Effects
   useEffect(() => {
@@ -43,6 +58,10 @@ function UserContextProvider({ children }) {
     };
   }, []);
   useEffect(() => {
+    fetchUserProfile();
+  }, [state.userDetails]);
+
+  useEffect(() => {
     if (isDisconnected) {
       setUserContext({
         userDetails: null,
@@ -54,7 +73,9 @@ function UserContextProvider({ children }) {
   }, [isDisconnected]);
 
   return (
-    <UserContext.Provider value={{ ...state, setUserContext }}>
+    <UserContext.Provider
+      value={{ ...state, setUserContext, fetchUserProfile }}
+    >
       {children}
     </UserContext.Provider>
   );

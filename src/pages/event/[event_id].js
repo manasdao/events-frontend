@@ -1,3 +1,4 @@
+import { UserContext } from "@/contexts/UserContextProvider";
 import DashboardLayout from "@/layouts/DashboardLayout";
 import customAxios from "@/utils/axios";
 import { mixpanel } from "@/utils/mixpanel";
@@ -7,7 +8,7 @@ import { BoltIcon as BoltIconSolid } from "@heroicons/react/24/solid";
 import moment from "moment";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 export const pickEventForUser = (eventId, isSideEvent, name) => {
   return customAxios.post(
     "/events/pickevent",
@@ -18,10 +19,17 @@ export const pickEventForUser = (eventId, isSideEvent, name) => {
 function SingleEvent() {
   // ! Hooks
   const { query, pathname, replace } = useRouter();
+  const userContext = useContext(UserContext);
   // ! Local states
   const [eventDetails, setEventDetails] = useState(null);
   const [loading, setLoading] = useState(false);
   // ! LocalHelpers
+  const isAttended = (eventId) => {
+    console.log("ev", eventId);
+    return userContext.userProfile?.attended?.find(
+      (singleEvent) => singleEvent.event == eventId
+    );
+  };
   const fetchSingleEvent = () => {
     customAxios
       .get(`/airtable/events?eventId=${query.event_id}`, {
@@ -107,7 +115,7 @@ function SingleEvent() {
               class="inline-flex items-center gap-x-2 rounded-md border-2 border-indigo-100 px-3.5 py-2.5 mt-4 text-md font-medium text-purple-200 shadow-sm hover:bg-indigo-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-800"
             >
               <BoltIconSolid width={20} />
-              Going
+              {isAttended(eventDetails?.id) ? "Attended" : "Going"}
             </button>
           ) : (
             <div className="flex items-center mt-4">

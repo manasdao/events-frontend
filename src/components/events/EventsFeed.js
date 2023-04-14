@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import moment from "moment";
 import Link from "next/link";
@@ -8,18 +8,36 @@ import { BoltIcon as BoltIconSolid } from "@heroicons/react/24/solid";
 import { pickEventForUser } from "@/pages/event/[event_id]";
 import { mixpanel } from "@/utils/mixpanel";
 import { useRouter } from "next/router";
+import dynamic from "next/dynamic";
+import { UserContext } from "@/contexts/UserContextProvider";
+const DynamicQrReader = dynamic(
+  () => import("@/components/modals/QRReaderModal"),
+  {
+    loading: () => <p>Loading...</p>,
+    ssr: false,
+  }
+);
 function EventsFeed({
   eventsTitle,
   allEvents,
   canMarkInterested,
   fetchAllEvents,
+  canMarkAttended,
 }) {
+  // ! Hooks
   const { pathname, replace } = useRouter();
+  const userContext = useContext(UserContext);
+  // ! States
   const [loading, setLoading] = useState(false);
-  function classNames(...classes) {
-    return classes.filter(Boolean).join(" ");
-  }
-
+  const [isQrModalOpen, setisQrModalOpen] = useState(false);
+  // ! Local handlers
+  const isAttended = (eventId) => {
+    console.log("ev", eventId);
+    return userContext.userProfile?.attended?.find(
+      (singleEvent) => singleEvent.event == eventId
+    );
+  };
+  // ! Effects
   useEffect(() => {
     setLoading(false);
   }, [allEvents]);
@@ -203,6 +221,41 @@ function EventsFeed({
                                   )}
                                 </>
                               )}
+                              {canMarkAttended && (
+                                <>
+                                  {isAttended(activityItem?.id) ? (
+                                    <button
+                                      type="button"
+                                      class="inline-flex items-center gap-x-2 rounded-md border-2 border-indigo-100 px-3.5 py-2.5 mt-4 text-md font-medium text-purple-200 shadow-sm hover:bg-indigo-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-800"
+                                    >
+                                      <BoltIconSolid width={20} />
+                                      Attended
+                                    </button>
+                                  ) : (
+                                    <button
+                                      type="button"
+                                      class="mt-4 inline-flex items-center gap-x-2 rounded-md bg-indigo-100 px-3.5 py-2.5 text-md font-medium text-purple-700 shadow-sm hover:bg-indigo-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-200"
+                                      onClick={(ev) => {
+                                        ev.stopPropagation();
+                                        setisQrModalOpen(true);
+                                        mixpanel("mark_as_attended", {
+                                          source_page: pathname,
+                                          triggered_location:
+                                            "events_feed_card",
+                                          isPicked: activityItem?.isPicked,
+                                          eventId: activityItem?.id,
+                                          eventStartTime: moment(
+                                            activityItem?.fields.Start
+                                          ).format("DD MMM, YYYY (HH:MM A)"),
+                                        });
+                                      }}
+                                    >
+                                      <BoltIcon width={20} />
+                                      Mark attendance
+                                    </button>
+                                  )}
+                                </>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -280,6 +333,11 @@ function EventsFeed({
           </div>
         </>
       )}
+      <DynamicQrReader
+        open={isQrModalOpen}
+        setOpen={setisQrModalOpen}
+        markAttendance
+      />
     </div>
   );
 }
