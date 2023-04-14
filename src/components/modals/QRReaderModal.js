@@ -33,7 +33,27 @@ function QRReaderModal({ open, setOpen, markAttendance }) {
               userContext.fetchUserProfile();
             });
         } else {
-          router.push(data);
+          customAxios
+            .post(
+              "/users/connect",
+              { otherUser: `${data.userId}` },
+              {
+                headers: { workspace: "2" },
+              }
+            )
+            .then((res) => {
+              console.log("connect res", res.data);
+              setOpen(false);
+              toast.success("Connected");
+              userContext.fetchUserProfile();
+            })
+            .catch((err) => {
+              console.log("addattendance err", err);
+              setOpen(false);
+              // toast.error(err.response.data.error.message);
+              userContext.fetchUserProfile();
+            });
+          router.push(data.telegram);
           setOpen(false);
         }
         setQrscan(data);

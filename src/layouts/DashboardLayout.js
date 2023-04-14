@@ -53,12 +53,12 @@ const navigation = [
   },
   { name: "DAO-CON team", href: "/team", icon: UserGroupIcon, current: false },
   { name: "FAQ", href: "/faq", icon: QuestionMarkCircleIcon, current: false },
-  {
-    name: "Follow ups",
-    href: "/follow-up",
-    icon: CalendarIcon,
-    current: false,
-  },
+  // {
+  //   name: "Follow ups",
+  //   href: "/follow-up",
+  //   icon: CalendarIcon,
+  //   current: false,
+  // },
 ];
 const teams = [
   { id: 1, name: "Heroicons", href: "#", initial: "H", current: false },
@@ -205,12 +205,14 @@ export default function DashboardLayout({
                 </Transition.Child>
                 {/* Sidebar component, swap this element with another sidebar if you like */}
                 <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4 ring-1 ring-white/10">
-                  <div className="flex h-16 shrink-0 items-center">
-                    <img
-                      className="h-8 w-auto"
-                      src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                      alt="Your Company"
-                    />
+                  <div className="flex h-16 shrink-0 mt-8 flex-col items-start">
+                    <span className="text-3xl font-bold text-purple-200">
+                      DAO-CON 2023.
+                    </span>
+
+                    <span className="text-lg text-purple-300">
+                      Paris, France.
+                    </span>
                   </div>
                   <nav className="flex flex-1 flex-col">
                     <ul role="list" className="flex flex-1 flex-col gap-y-7">
@@ -252,13 +254,15 @@ export default function DashboardLayout({
           </div>
         </Dialog>
       </Transition.Root>
-      <Link
-        type="button"
-        className="fixed bottom-20 z-[65] right-6 drop-shadow-xl rounded-full bg-indigo-600 p-2 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        href={"https://telegram.me/MukundChourey"}
-      >
-        <ChatBubbleLeftIcon width={32} />
-      </Link>
+      {userContext?.telegramDetails && (
+        <Link
+          type="button"
+          className="fixed bottom-20 z-[65] right-6 drop-shadow-xl rounded-full bg-indigo-600 p-2 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          href={"https://telegram.me/MukundChourey"}
+        >
+          <ChatBubbleLeftIcon width={32} />
+        </Link>
+      )}
       {/* Static sidebar for desktop */}
       <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
         {/* Sidebar component, swap this element with another sidebar if you like */}
