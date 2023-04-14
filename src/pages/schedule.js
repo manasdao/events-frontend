@@ -1,10 +1,7 @@
 import Head from "next/head";
-import Image from "next/image";
 import { Inter } from "next/font/google";
 import DashboardLayout from "@/layouts/DashboardLayout";
-import { useContext, useEffect, useState } from "react";
-import { UserContext } from "@/contexts/UserContextProvider";
-import ConnectTelegramModal from "@/components/modals/ConnectTelegramModal";
+import { useEffect, useState } from "react";
 import EventsFeed from "@/components/events/EventsFeed";
 import customAxios from "@/utils/axios";
 import { useRouter } from "next/router";
@@ -13,12 +10,9 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function Schedule() {
   const router = useRouter();
-  const userContext = useContext(UserContext);
-  const [isTelegramModalOpen, setIsTelegramModalOpen] = useState(false);
   const [allEvents, setAllEvents] = useState(null);
 
   useEffect(() => {
-    if (!userContext.telegramDetails) setIsTelegramModalOpen(true);
     customAxios
       .get(`/events/myevents`, {
         headers: { workspace: "2" },
@@ -43,16 +37,9 @@ export default function Schedule() {
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
       </Head>
       <DashboardLayout currentTab="Schedule">
-        {userContext.telegramDetails ? (
-          <main>
-            <EventsFeed eventsTitle="My Schedule" allEvents={allEvents} />
-          </main>
-        ) : (
-          <ConnectTelegramModal
-            open={isTelegramModalOpen}
-            setOpen={setIsTelegramModalOpen}
-          />
-        )}
+        <main>
+          <EventsFeed eventsTitle="My Schedule" allEvents={allEvents} />
+        </main>
       </DashboardLayout>
     </>
   );

@@ -14,6 +14,7 @@ import {
   ChatBubbleLeftIcon,
   CurrencyDollarIcon,
   QrCodeIcon,
+  PlusCircleIcon,
 } from "@heroicons/react/24/outline";
 import {
   MagnifyingGlassIcon,
@@ -630,8 +631,21 @@ export default function DashboardLayout({
                     <Popover.Panel className="absolute -right-0 z-10 mt-6 flex w-[92vw] max-w-[360px]">
                       <div className="w-screen max-w-md flex-auto overflow-hidden rounded-lg bg-purple-100 text-sm leading-6 shadow-lg ring-1 ring-gray-900/5">
                         <div className="flex flex-col items-left w-full pt-2 pb-4">
-                          <span className="text-2xl pl-6 block my-4 font-semibold text-left text-purple-950">
+                          <span className="flex items-center justify-between text-2xl pl-6 my-4 font-semibold text-left text-purple-950">
                             Announcements
+                            <button
+                              type="button"
+                              className="inline-flex mr-4 items-center gap-x-1.5 rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-lg hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                              onClick={() => {
+                                router.push("/broadcast");
+                              }}
+                            >
+                              <PlusCircleIcon
+                                className="-ml-0.5 h-5 w-5"
+                                aria-hidden="true"
+                              />
+                              Add new
+                            </button>
                           </span>
                           <div className=" max-h-[450px]  overflow-y-scroll">
                             {announcements?.length > 0 &&
@@ -639,10 +653,13 @@ export default function DashboardLayout({
                                 return (
                                   <>
                                     <Link
-                                      href={linkGenerator(
-                                        singleAnnouncement.type,
-                                        singleAnnouncement.airtableId
-                                      )}
+                                      href={
+                                        singleAnnouncement.link ||
+                                        linkGenerator(
+                                          singleAnnouncement.type,
+                                          singleAnnouncement.airtableId
+                                        )
+                                      }
                                       key={singleAnnouncement.id}
                                       className="w-full grid items-center px-4"
                                       style={{
