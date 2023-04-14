@@ -41,11 +41,12 @@ export default function Home() {
         { headers: { workspace: "2" } }
       )
       .then((res) => {
-        console.log("meta login resp");
+        console.log("meta login usercontext", userContext);
         // ! Store the access token on LS
         window.localStorage.setItem("access_token", res.data.access_token);
         userContext.setUserContext({ isSigned: true });
-        router.replace("/schedule");
+        if (userContext.telegramDetails) router.replace("/schedule");
+        else setIsTelegramModalOpen(true);
         setIsSigning(false);
       })
       // ! Metamsk login by passign the signature error

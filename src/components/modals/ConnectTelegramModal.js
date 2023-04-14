@@ -13,7 +13,7 @@ export default function ConnectTelegramModal({ open, setOpen }) {
   const { address } = useAccount();
   const { pathname, replace } = useRouter();
   const handleTelegramResponse = (response) => {
-    console.log(response);
+    console.log("telegram response", response);
     customAxios
       .patch(
         "/users/update",
@@ -107,7 +107,7 @@ export default function ConnectTelegramModal({ open, setOpen }) {
                 >
                   <TelegramLoginButton
                     dataOnauth={handleTelegramResponse}
-                    botName="daolens_bot"
+                    botName="daolenstestbot"
                     className="w-full"
                   />
                 </div>
