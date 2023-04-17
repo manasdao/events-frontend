@@ -1,5 +1,6 @@
 import { POLLING_INTERVAL, USER_CONTEXT_BACKUP } from "@/constants";
 import customAxios from "@/utils/axios";
+import { mixpanelSetUser } from "@/utils/mixpanel";
 import React, { createContext, useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 export const UserContext = createContext({});
@@ -59,6 +60,13 @@ function UserContextProvider({ children }) {
   }, []);
   useEffect(() => {
     fetchUserProfile();
+    if (state?.userDetails)
+      mixpanelSetUser(
+        state?.userDetails?.first_name,
+        state?.userDetails.id,
+        state.telegramDetails.username,
+        state.walletDetails.address
+      );
   }, [state.userDetails]);
 
   useEffect(() => {

@@ -6,7 +6,10 @@ import DashboardLayout from "@/layouts/DashboardLayout";
 import Link from "next/link";
 function MyProfile() {
   const { userDetails, userProfile } = useContext(UserContext);
-
+  let qrDetails = {
+    userId: `${userDetails?.id}`,
+    telegram: `https://www.t.me/${userDetails?.user_name}`,
+  };
   if (!userDetails)
     return (
       <DashboardLayout>
@@ -61,9 +64,7 @@ function MyProfile() {
               </h4>
             </div>
             <div className="mb-4 flex justify-center sm:mb-0 sm:mr-4">
-              <QRCode
-                value={`{userId:${userDetails?.id},telegram:https://www.t.me/${userDetails?.user_name}}`}
-              />
+              <QRCode value={JSON.stringify(qrDetails)} />
             </div>
             <div className="flex items-center mx-auto w-full justify-center">
               <SocialIcon

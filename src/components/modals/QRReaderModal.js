@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import customAxios from "@/utils/axios";
 import { toast } from "react-toastify";
 import { UserContext } from "@/contexts/UserContextProvider";
+import { mixpanel } from "@/utils/mixpanel";
 function QRReaderModal({ open, setOpen, markAttendance }) {
   const [qrscan, setQrscan] = useState("No result");
   const router = useRouter();
@@ -13,6 +14,13 @@ function QRReaderModal({ open, setOpen, markAttendance }) {
   const handleScan = (data) => {
     try {
       if (data) {
+        setOpen(false);
+        mixpanel("qr_scan", {
+          source_page: router.pathname,
+          triggered_location: "qr_reader",
+          data,
+          isSuccess: true,
+        });
         console.log("qr scan data", data);
         if (markAttendance) {
           let dataToMarkAttendance = JSON.parse(data);
@@ -23,6 +31,12 @@ function QRReaderModal({ open, setOpen, markAttendance }) {
             .then((res) => {
               console.log("addattendance res", res.data);
               setOpen(false);
+              mixpanel("mark_attended", {
+                source_page: router.pathname,
+                triggered_location: "qr_reader",
+                isPicked: true,
+                eventId: dataToMarkAttendance.eventId,
+              });
               toast.success("Marked attendace!");
               userContext.fetchUserProfile();
             })
@@ -33,10 +47,16 @@ function QRReaderModal({ open, setOpen, markAttendance }) {
               userContext.fetchUserProfile();
             });
         } else {
+          let dataToConnect = JSON.parse(data);
+          console.log(
+            "qr scan data in else",
+            dataToConnect,
+            `${dataToConnect.userId}`
+          );
           customAxios
             .post(
               "/users/connect",
-              { otherUser: `${data.userId}` },
+              { otherUser: `${dataToConnect.userId}` },
               {
                 headers: { workspace: "2" },
               }
@@ -63,6 +83,11 @@ function QRReaderModal({ open, setOpen, markAttendance }) {
     }
   };
   const handleError = (err) => {
+    mixpanel("qr_scan", {
+      source_page: router.pathname,
+      triggered_location: "qr_reader",
+      isSuccess: false,
+    });
     console.error(err);
   };
   // ! Local helpers

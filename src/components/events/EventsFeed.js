@@ -83,6 +83,10 @@ function EventsFeed({
                               <Link
                                 href={`/event/${activityItem?.id}`}
                                 onClick={() => {
+                                  mixpanel("generic_link_click", {
+                                    linkType: "Link to event",
+                                    destinationUrl: `/event/${activityItem?.id}`,
+                                  });
                                   mixpanel("event_card_click", {
                                     source_page: pathname,
                                     triggered_location: "events_feed_card",
@@ -153,6 +157,12 @@ function EventsFeed({
                                     <button
                                       type="button"
                                       class="inline-flex items-center gap-x-2 rounded-md border-2 border-indigo-100 px-3.5 py-2.5 mt-4 text-md font-medium text-purple-200 shadow-sm hover:bg-indigo-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-800"
+                                      onClick={() => {
+                                        mixpanel("generic_button_click", {
+                                          buttonText: "Going",
+                                          eventId: activityItem.id,
+                                        });
+                                      }}
                                     >
                                       <BoltIconSolid width={20} />
                                       Going
@@ -187,6 +197,10 @@ function EventsFeed({
                                             eventStartTime: moment(
                                               activityItem?.fields.Start
                                             ).format("DD MMM, YYYY (HH:MM A)"),
+                                          });
+                                          mixpanel("generic_button_click", {
+                                            buttonText: "Interested",
+                                            eventId: activityItem.id,
                                           });
                                         }}
                                       >
@@ -227,6 +241,12 @@ function EventsFeed({
                                     <button
                                       type="button"
                                       class="inline-flex items-center gap-x-2 rounded-md border-2 border-indigo-100 px-3.5 py-2.5 mt-4 text-md font-medium text-purple-200 shadow-sm hover:bg-indigo-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-800"
+                                      onClick={() => {
+                                        mixpanel("generic_button_click", {
+                                          buttonText: "Attended",
+                                          eventId: activityItem.id,
+                                        });
+                                      }}
                                     >
                                       <BoltIconSolid width={20} />
                                       Attended
@@ -247,6 +267,10 @@ function EventsFeed({
                                           eventStartTime: moment(
                                             activityItem?.fields.Start
                                           ).format("DD MMM, YYYY (HH:MM A)"),
+                                        });
+                                        mixpanel("generic_button_click", {
+                                          buttonText: "Mark attendance",
+                                          eventId: activityItem.id,
                                         });
                                       }}
                                     >

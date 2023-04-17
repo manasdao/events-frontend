@@ -193,7 +193,12 @@ export default function DashboardLayout({
                     <button
                       type="button"
                       className="-m-2.5 p-2.5"
-                      onClick={() => setSidebarOpen(false)}
+                      onClick={() => {
+                        mixpanel("generic_button_click", {
+                          buttonText: "Close sidebar",
+                        });
+                        setSidebarOpen(false);
+                      }}
                     >
                       <span className="sr-only">Close sidebar</span>
                       <XMarkIcon
@@ -222,6 +227,11 @@ export default function DashboardLayout({
                             <li key={item.name}>
                               <a
                                 href={item.href}
+                                onClick={() => {
+                                  mixpanel("sidebar_link_click", {
+                                    link: item.href,
+                                  });
+                                }}
                                 className={classNames(
                                   item.current
                                     ? "bg-gray-800 text-white"
@@ -259,6 +269,12 @@ export default function DashboardLayout({
           type="button"
           className="fixed bottom-20 z-[65] right-6 drop-shadow-xl rounded-full bg-indigo-600 p-2 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           href={"https://telegram.me/MukundChourey"}
+          onClick={() => {
+            mixpanel("generic_link_click", {
+              linkType: "Open telegram",
+              destinationUrl: "https://telegram.me/MukundChourey",
+            });
+          }}
         >
           <ChatBubbleLeftIcon width={32} />
         </Link>
@@ -346,7 +362,12 @@ export default function DashboardLayout({
           <button
             type="button"
             className="-m-2.5 p-2.5 text-gray-700 lg:hidden"
-            onClick={() => setSidebarOpen(true)}
+            onClick={() => {
+              mixpanel("generic_button_click", {
+                buttonText: "Open sidebar",
+              });
+              setSidebarOpen(true);
+            }}
           >
             <span className="sr-only">Open sidebar</span>
             <Bars3Icon className="h-6 w-6" aria-hidden="true" />
@@ -606,7 +627,15 @@ export default function DashboardLayout({
                   setQrModalOpen(true);
                 }}
               />
-              <button type="button" className="-m-2.5 p-2.5 text-gray-400">
+              <button
+                onClick={() => {
+                  mixpanel("generic_button_click", {
+                    buttonText: "Open announcements",
+                  });
+                }}
+                type="button"
+                className="-m-2.5 p-2.5 text-gray-400"
+              >
                 <span className="sr-only">View notifications</span>
                 <Popover className="relative">
                   <Popover.Button className="flex items-center ">
@@ -642,6 +671,9 @@ export default function DashboardLayout({
                               className="inline-flex mr-4 items-center gap-x-1.5 rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-lg hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                               onClick={() => {
                                 router.push("/broadcast");
+                                mixpanel("generic_button_click", {
+                                  buttonText: "Add broadcast",
+                                });
                               }}
                             >
                               <PlusCircleIcon
@@ -668,6 +700,17 @@ export default function DashboardLayout({
                                       className="w-full grid items-center px-4"
                                       style={{
                                         gridTemplateColumns: "1fr 6fr 3fr",
+                                      }}
+                                      onClick={() => {
+                                        mixpanel("generic_link_click", {
+                                          linkType: "Open announcement source",
+                                          destinationUrl:
+                                            singleAnnouncement.link ||
+                                            linkGenerator(
+                                              singleAnnouncement.type,
+                                              singleAnnouncement.airtableId
+                                            ),
+                                        });
                                       }}
                                     >
                                       <span className="text-2xl">

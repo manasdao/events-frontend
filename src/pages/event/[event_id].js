@@ -113,6 +113,14 @@ function SingleEvent() {
             <button
               type="button"
               class="inline-flex items-center gap-x-2 rounded-md border-2 border-indigo-100 px-3.5 py-2.5 mt-4 text-md font-medium text-purple-200 shadow-sm hover:bg-indigo-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-800"
+              onClick={() => {
+                mixpanel("generic_button_click", {
+                  buttonText: isAttended(eventDetails?.id)
+                    ? "Attended"
+                    : "Going",
+                  eventId: eventDetails?.id,
+                });
+              }}
             >
               <BoltIconSolid width={20} />
               {isAttended(eventDetails?.id) ? "Attended" : "Going"}
@@ -142,6 +150,10 @@ function SingleEvent() {
                     eventStartTime: moment(eventDetails?.fields.Start).format(
                       "DD MMM, YYYY (HH:MM A)"
                     ),
+                  });
+                  mixpanel("generic_button_click", {
+                    buttonText: "Interested",
+                    eventId: eventDetails?.id,
                   });
                 }}
               >

@@ -182,7 +182,12 @@ export default function Home() {
               {isSigning ? (
                 isSigning == "FAILED" ? (
                   <button
-                    onClick={signMessageForToken}
+                    onClick={() => {
+                      mixpanel("generic_button_click", {
+                        buttonText: "Sign message for token",
+                      });
+                      signMessageForToken();
+                    }}
                     type="button"
                     className="rounded-lg ml-4 bg-white/40 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-white/20"
                   >
