@@ -44,7 +44,7 @@ function QRReaderModal({ open, setOpen, markAttendance }) {
               console.log("addattendance err", err);
               setOpen(false);
               // toast.error(err.response.data.error.message);
-              userContext.fetchUserProfile();
+
             });
         } else {
           let dataToConnect = JSON.parse(data);
@@ -65,13 +65,11 @@ function QRReaderModal({ open, setOpen, markAttendance }) {
               console.log("connect res", res.data);
               setOpen(false);
               toast.success("Connected");
-              userContext.fetchUserProfile();
+
             })
             .catch((err) => {
               console.log("addattendance err", err);
               setOpen(false);
-              // toast.error(err.response.data.error.message);
-              userContext.fetchUserProfile();
             });
           router.push(data.telegram);
           setOpen(false);

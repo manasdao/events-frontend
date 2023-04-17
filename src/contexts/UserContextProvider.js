@@ -59,14 +59,15 @@ function UserContextProvider({ children }) {
     };
   }, []);
   useEffect(() => {
-    fetchUserProfile();
-    if (state?.userDetails)
+    if (state?.userDetails) {
+      fetchUserProfile();
       mixpanelSetUser(
         state?.userDetails?.first_name,
         state?.userDetails.id,
         state.telegramDetails.username,
         state.walletDetails.address
       );
+    }
   }, [state.userDetails]);
 
   useEffect(() => {
