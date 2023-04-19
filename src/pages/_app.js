@@ -55,7 +55,7 @@ export default function App({ Component, pageProps }) {
   const userContext = useContext(UserContext);
   // ! Local states
   const [ready, setReady] = useState(false);
-  const { isDisconnected } = useAccount();
+  // const { isDisconnected } = useAccount();
   const { theme, setTheme } = useWeb3ModalTheme();
 
   useEffect(() => {

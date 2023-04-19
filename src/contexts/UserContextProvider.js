@@ -7,10 +7,10 @@ import { useAccount, useDisconnect } from "wagmi";
 export const UserContext = createContext({});
 function UserContextProvider({ children }) {
   // ! hooks
-  const { isDisconnected, isConnected, address, isConnecting, isReconnecting } =
-    useAccount();
-  const { disconnect } = useDisconnect();
-  const { push } = useRouter();
+  // const { isDisconnected, isConnected, address, isConnecting, isReconnecting } =
+  //   useAccount();
+  // const { disconnect } = useDisconnect();
+  // const { push } = useRouter();
   // ! States
   const [state, setState] = useState({
     userId: "",
@@ -27,20 +27,31 @@ function UserContextProvider({ children }) {
     setState({ ...state, ...stateToUpdate });
     window.localStorage.setItem(USER_CONTEXT_BACKUP, JSON.stringify(newState));
   };
-  const fetchUserProfile = () => {
-    if (state?.userDetails?.id)
+  const fetchUserProfile = (id = state.userDetails.id) => {
+    console.log("\n\nrunning this\n\n", id);
+    if (id)
       customAxios
-        .get(`/users/fetchprofile?userId=${state.userDetails.id}`, {
+        .get(`/users/fetchprofile?userId=${id}`, {
           headers: { workspace: "2" },
         })
         .then((res) => {
           console.log("fetchprofile res", res.data);
-          setUserContext({ userProfile: res.data });
+          setUserContext({ userProfile: res.data, fetchedUserDetails: false });
         })
         .catch((err) => {
           console.log("fetchprofile err", err);
         });
   };
+  const logoutUser = () => {
+    setUserContext({
+      userDetails: null,
+      telegramDetails: null,
+      isSigned: false,
+      walletDetails: null,
+      userProfile: null,
+    });
+  };
+
   // ! Effects
   useEffect(() => {
     let storedUserContext = window.localStorage.getItem(USER_CONTEXT_BACKUP);
@@ -63,20 +74,28 @@ function UserContextProvider({ children }) {
     };
   }, []);
   useEffect(() => {
-    if (state?.userDetails && !state.userProfile) {
-      fetchUserProfile();
-      mixpanelSetUser(
-        state?.userDetails?.first_name,
-        state?.userDetails.id,
-        state.telegramDetails.username,
-        state.walletDetails.address
-      );
-    }
-    // if (!state.userDetails) {
-    //   disconnect();
-    //   push("/");
-    // }
-  }, [state.userDetails]);
+    if (state?.fetchedUserDetails) fetchUserProfile();
+  }, [state]);
+
+  // useEffect(() => {
+  //   if (state?.userDetails && !state.userProfile) {
+  //     fetchUserProfile();
+  //     mixpanelSetUser(
+  //       state?.userDetails?.first_name,
+  //       state?.userDetails.id,
+  //       state.telegramDetails.username,
+  //       state.walletDetails.address
+  //     );
+  //   }
+  //   if (
+  //     !state?.userDetails ||
+  //     !state?.telegramDetails ||
+  //     !state?.walletDetails
+  //   ) {
+  //     // disconnect();
+  //     push("/");
+  //   }
+  // }, [state?.userDetails]);
 
   // useEffect(() => {
   //   if (!isReconnecting && !isConnecting && isDisconnected) {
@@ -93,7 +112,7 @@ function UserContextProvider({ children }) {
 
   return (
     <UserContext.Provider
-      value={{ ...state, setUserContext, fetchUserProfile }}
+      value={{ ...state, setUserContext, fetchUserProfile, logoutUser }}
     >
       {children}
     </UserContext.Provider>

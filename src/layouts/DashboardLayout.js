@@ -77,7 +77,12 @@ export default function DashboardLayout({
 }) {
   // ! Hooks ****************************************************************************************************************
   const router = useRouter();
-  const account = useAccount();
+  const account = useAccount({
+    onDisconnect() {
+      userContext.logoutUser();
+      router.push("/");
+    },
+  });
   const chainid = useChainId();
   const { switchNetwork } = useSwitchNetwork();
 
@@ -129,23 +134,22 @@ export default function DashboardLayout({
   useEffect(() => {
     if (switchNetwork && chainid !== 137) switchNetwork(137);
   }, [chainid, switchNetwork]);
+  // useEffect(() => {
+  //   if (account.isDisconnected) {
+  //     mixpanel("wallet_disconnecting", {
+  //       source_page: router.pathname,
+  //       triggered_location: "page",
+  //     });
+  //     console.log("from here - 1 -- status -- ", account.status);
+  //     // router.replace("/");
+  //   }
+  //   if (account.isConnecting || account.isReconnecting)
+  //     mixpanel("wallet_connecting", {
+  //       source_page: router.pathname,
+  //       triggered_location: "page",
+  //     });
+  // }, [account]);
   useEffect(() => {
-    if (account.isDisconnected) {
-      mixpanel("wallet_disconnecting", {
-        source_page: router.pathname,
-        triggered_location: "page",
-      });
-      console.log("from here - 1");
-      // router.replace("/");
-    }
-    if (account.isConnecting || account.isReconnecting)
-      mixpanel("wallet_connecting", {
-        source_page: router.pathname,
-        triggered_location: "page",
-      });
-  }, [account]);
-  useEffect(() => {
-    console.log("runn this");
     fetchAnnouncements();
   }, [userContext.pollAnnouncements]);
   // ! Console logs ****************************************************************************************************************

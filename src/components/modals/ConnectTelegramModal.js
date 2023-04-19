@@ -11,7 +11,7 @@ import { useRouter } from "next/router";
 export default function ConnectTelegramModal({ open, setOpen }) {
   const userContext = useContext(UserContext);
   const { address } = useAccount();
-  const { pathname, replace } = useRouter();
+  const { pathname, replace, push } = useRouter();
   const handleTelegramResponse = (response) => {
     console.log("telegram response", response);
     customAxios
@@ -32,8 +32,10 @@ export default function ConnectTelegramModal({ open, setOpen }) {
           userDetails: res.data[0],
           telegramDetails: response,
           walletDetails: { address: address },
+          fetchedUserDetails: true,
         });
         console.log("res", res);
+        push("/schedule");
       })
       .catch((err) => {
         if (err?.response?.status == 403) replace("/tickets");
