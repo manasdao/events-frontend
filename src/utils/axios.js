@@ -17,5 +17,8 @@ const requestHandler = (request) => {
   return request;
 };
 customAxios.interceptors.request.use((request) => requestHandler(request));
+// customAxios.interceptors.response.use((err) => {
+//   console.log("error data\n\n", err, "\n\n");
+// });
 
 export default customAxios;

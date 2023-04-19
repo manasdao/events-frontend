@@ -107,7 +107,8 @@ export default function ConnectTelegramModal({ open, setOpen }) {
                 >
                   <TelegramLoginButton
                     dataOnauth={handleTelegramResponse}
-                    botName="daolenstestbot"
+                    botName={process.env.NEXT_PUBLIC_BOT_NAME}
+                    // botName="daolenstestbot"
                     className="w-full"
                   />
                 </div>

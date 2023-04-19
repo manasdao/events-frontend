@@ -44,7 +44,6 @@ function QRReaderModal({ open, setOpen, markAttendance }) {
               console.log("addattendance err", err);
               setOpen(false);
               // toast.error(err.response.data.error.message);
-
             });
         } else {
           let dataToConnect = JSON.parse(data);
@@ -65,7 +64,6 @@ function QRReaderModal({ open, setOpen, markAttendance }) {
               console.log("connect res", res.data);
               setOpen(false);
               toast.success("Connected");
-
             })
             .catch((err) => {
               console.log("addattendance err", err);

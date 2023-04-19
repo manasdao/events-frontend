@@ -123,7 +123,7 @@ export default function Home() {
       } else setIsTelegramModalOpen(true);
     }
   }, [userContext.telegramDetails]);
-
+console.log("\n\naccount\n\n", account);
   return (
     <>
       <Head>

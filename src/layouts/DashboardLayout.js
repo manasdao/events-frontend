@@ -135,7 +135,8 @@ export default function DashboardLayout({
         source_page: router.pathname,
         triggered_location: "page",
       });
-      router.replace("/");
+      console.log("from here - 1");
+      // router.replace("/");
     }
     if (account.isConnecting || account.isReconnecting)
       mixpanel("wallet_connecting", {
@@ -144,6 +145,7 @@ export default function DashboardLayout({
       });
   }, [account]);
   useEffect(() => {
+    console.log("runn this");
     fetchAnnouncements();
   }, [userContext.pollAnnouncements]);
   // ! Console logs ****************************************************************************************************************

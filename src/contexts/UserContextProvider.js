@@ -1,12 +1,16 @@
 import { POLLING_INTERVAL, USER_CONTEXT_BACKUP } from "@/constants";
 import customAxios from "@/utils/axios";
 import { mixpanelSetUser } from "@/utils/mixpanel";
+import { useRouter } from "next/router";
 import React, { createContext, useEffect, useState } from "react";
-import { useAccount } from "wagmi";
+import { useAccount, useDisconnect } from "wagmi";
 export const UserContext = createContext({});
 function UserContextProvider({ children }) {
   // ! hooks
-  const { isDisconnected, isConnected, address } = useAccount();
+  const { isDisconnected, isConnected, address, isConnecting, isReconnecting } =
+    useAccount();
+  const { disconnect } = useDisconnect();
+  const { push } = useRouter();
   // ! States
   const [state, setState] = useState({
     userId: "",
@@ -59,7 +63,7 @@ function UserContextProvider({ children }) {
     };
   }, []);
   useEffect(() => {
-    if (state?.userDetails) {
+    if (state?.userDetails && !state.userProfile) {
       fetchUserProfile();
       mixpanelSetUser(
         state?.userDetails?.first_name,
@@ -68,18 +72,24 @@ function UserContextProvider({ children }) {
         state.walletDetails.address
       );
     }
+    // if (!state.userDetails) {
+    //   disconnect();
+    //   push("/");
+    // }
   }, [state.userDetails]);
 
-  useEffect(() => {
-    if (isDisconnected) {
-      setUserContext({
-        userDetails: null,
-        telegramDetails: null,
-        isSigned: false,
-        walletDetails: null,
-      });
-    }
-  }, [isDisconnected]);
+  // useEffect(() => {
+  //   if (!isReconnecting && !isConnecting && isDisconnected) {
+  //     console.log("from here - 3");
+  //     setUserContext({
+  //       userDetails: null,
+  //       telegramDetails: null,
+  //       isSigned: false,
+  //       walletDetails: null,
+  //       userProfile: null,
+  //     });
+  //   }
+  // }, [isConnecting, isDisconnected, isReconnecting]);
 
   return (
     <UserContext.Provider
