@@ -56,7 +56,8 @@ html {
 
 body {
   /* color: rgb(var(--foreground-rgb)); */
-  background: linear-gradient(rgb(27, 0, 74), rgb(48, 2, 126)) no-repeat;
+  background: #ffffff;
+  /* background: linear-gradient(rgb(27, 0, 74), rgb(48, 2, 126)) no-repeat; */
   min-height: 100vh;
 }
 
@@ -65,9 +66,19 @@ a {
   text-decoration: none;
 }
 
+.events-page-swiper .swiper-wrapper {
+  margin-bottom: 30px;
+}
 
+.events-page-swiper .swiper-wrapper {
+  margin-bottom: 30px;
+}
 
 #telegram-login-daolens_bot {
+  margin: auto;
+}
+
+#telegram-login-daolenstestbot {
   margin: auto;
 }
 
@@ -78,4 +89,29 @@ a {
     0.5px -0.5px 0 #ffffff,
     -0.5px 0.5px 0 #ffffff,
     0.5px 0.5px 0 #ffffff;
+}
+
+.explore-page-swiper {
+  width: 100%;
+  margin-top: 1rem;
+
+}
+
+.explore-page-swiper .swiper-slide {
+  width: auto;
+}
+
+.explore-page-swiper .swiper-wrapper {
+  margin-bottom: 30px;
+}
+
+.ticket_layout {
+  display: inline-block;
+  box-sizing: content-box;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.5));
+  position: relative;
+  background-size: 51% 100%;
+  background-repeat: no-repeat;
+  background-image: radial-gradient(circle at 0 50%, rgba(255, 255, 224, 0) 2em, #e9f4f7 0.5em), radial-gradient(circle at 100% 50%, rgba(255, 255, 224, 0) 2em, #e9f4f7 0.5em);
+  background-position: top left, top right;
 }

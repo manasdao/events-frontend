@@ -4,7 +4,7 @@ import React from "react";
 
 function Profile() {
   return (
-    <DashboardLayout currentTab="Profile">
+    <DashboardLayout currentTab="Profile" hideChat hideBottomNav>
       <MyProfile />
     </DashboardLayout>
   );

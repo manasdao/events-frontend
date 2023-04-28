@@ -1,5 +1,10 @@
 import { Disclosure } from "@headlessui/react";
-import { MinusSmallIcon, PlusSmallIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowLeftIcon,
+  MinusSmallIcon,
+  PlusSmallIcon,
+} from "@heroicons/react/24/outline";
+import { useRouter } from "next/router";
 
 const faqs = [
   {
@@ -20,20 +25,31 @@ const faqs = [
 ];
 
 export default function Example() {
+  const { back } = useRouter();
   return (
     <div className=" h-screen">
-      <div className="mx-auto max-w-7xl px-6 py-12 sm:py-32 lg:px-8 lg:py-40">
+      <div className="mx-auto max-w-7xl px-6 py-12 sm:py-32 lg:px-8 lg:py-40 text-gray-900">
         <div className="mx-auto max-w-4xl divide-y divide-white/10">
-          <h2 className="text-2xl font-bold leading-10 tracking-tight text-white">
+          <div className="flex items-center w-full justify-between mb-8">
+            <ArrowLeftIcon
+              onClick={back}
+              className=""
+              width={24}
+              strokeWidth={2}
+            />
+            {/* <ShareIcon className="" width={24} strokeWidth={2} /> */}
+            <div></div>
+          </div>
+          <h2 className="text-2xl font-bold leading-10 tracking-tight">
             Frequently asked questions
           </h2>
-          <dl className="mt-10 space-y-6 divide-y divide-white/10">
+          <dl className="mt-8 space-y-6 divide-y divide-white/10">
             {faqs.map((faq) => (
-              <Disclosure as="div" key={faq.question} className="pt-6">
+              <Disclosure as="div" key={faq.question} className="pt-2">
                 {({ open }) => (
                   <>
                     <dt>
-                      <Disclosure.Button className="flex w-full items-start justify-between text-left text-white">
+                      <Disclosure.Button className="flex w-full items-start justify-between text-left text-gray-900">
                         <span className="text-base font-semibold leading-7">
                           {faq.question}
                         </span>
@@ -53,7 +69,7 @@ export default function Example() {
                       </Disclosure.Button>
                     </dt>
                     <Disclosure.Panel as="dd" className="mt-2 pr-12">
-                      <p className="text-base leading-7 text-gray-300">
+                      <p className="text-base leading-7 text-gray-500">
                         {faq.answer}
                       </p>
                     </Disclosure.Panel>

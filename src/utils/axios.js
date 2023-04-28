@@ -34,7 +34,7 @@ customAxios.interceptors.response.use(
           Router.push("/");
           window.localStorage.user_context = null;
           console.log("error data\n\n", err, "\n\n");
-          toast.error("Please reconnect");
+          // toast.error("Please reconnect");
         })
         .catch((res) => console.log("res"));
 

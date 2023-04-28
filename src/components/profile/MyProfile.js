@@ -1,11 +1,20 @@
 import { UserContext } from "@/contexts/UserContextProvider";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { SocialIcon } from "react-social-icons";
 import QRCode from "react-qr-code";
 import DashboardLayout from "@/layouts/DashboardLayout";
 import Link from "next/link";
+import { Thunderline } from "../events/EventsFeed";
+import SingleUserCard from "../SingleUserCard";
+import CompactEventCard from "../CompactEventCard";
+import { ArrowLeftIcon, ShareIcon } from "@heroicons/react/24/outline";
+import { useRouter } from "next/router";
 function MyProfile() {
+  const { back } = useRouter();
+
   const { userDetails, userProfile } = useContext(UserContext);
+  const [currentTab, setCurrentTab] = useState("About");
+
   let qrDetails = {
     userId: `${userDetails?.id}`,
     telegram: `https://www.t.me/${userDetails?.user_name}`,
@@ -49,59 +58,179 @@ function MyProfile() {
       </DashboardLayout>
     );
   return (
-    <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 mt-10 rounded-lg drop-shadow-lg">
-      <div className="overflow-hidden bg-gradient-to-b from-purple-300 to-purple-950 shadow rounded-lg">
-        <div className="px-4 py-5 sm:p-6">
-          <div className="sm:flex">
-            <div className="flex flex-col w-full items-center">
-              <img
-                src={userDetails?.profile_picture}
-                alt=""
-                className="w-16 rounded-full shadow-lg drop-shadow-lg"
-              />
-              <h4 className="text-4xl my-3 text-purple-900 font-bold text-center">
-                {userDetails?.first_name} {userDetails?.last_name}
-              </h4>
-            </div>
-            <div className="mb-4 flex justify-center sm:mb-0 sm:mr-4">
-              <QRCode value={JSON.stringify(qrDetails)} />
-            </div>
-            <div className="flex items-center mx-auto w-full justify-center">
-              <SocialIcon
-                url="https://twitter.com/tripathigrows"
-                className="mx-4"
-              />
-              <SocialIcon
-                url="https://www.linkedin.com/in/manas-tripathi-dev/"
-                className="mx-4"
-              />
-              <SocialIcon url="https://www.t.me/scotch1998" className="mx-4" />
-            </div>
-            {userProfile?.attended?.length > 0 && (
-              <div>
-                <h4 className="text-lg text-gray-300 my-2 font-bold">POAPs</h4>
-                <div className="overflow-x-scroll flex items-center">
-                  {userProfile?.attended.map((singlePoap, index) => {
-                    return (
-                      <div
-                        key={index}
-                        className="flex flex-col items-center mr-4 "
-                      >
-                        <Link
-                          href={`/event/${singlePoap.event}`}
-                          className="whitespace-nowrap inline-flex items-center justify-center h-12 w-12 rounded-full bg-purple-200 text-purple-800 font-bold text-xl "
-                        >
-                          {singlePoap.eventName[0]}
-                        </Link>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-          </div>
+    <div className="mt-8 text-gray-900">
+      <div className="flex flex-col w-full items-center">
+        <div className="flex items-center w-full justify-between">
+          <ArrowLeftIcon
+            onClick={back}
+            className=""
+            width={24}
+            strokeWidth={2}
+          />
+          <ShareIcon className="" width={24} strokeWidth={2} />
+        </div>
+        <img
+          src={userDetails?.profile_picture}
+          alt=""
+          className="w-16 rounded-full shadow-lg drop-shadow-lg"
+        />
+        <h4 className="text-xl mt-3 text-gray-900 font-bold text-center">
+          {userDetails?.first_name} {userDetails?.last_name}
+        </h4>
+        <p className="text-sm text-gray-500 mb-4">Blockchain Engineer</p>
+      </div>
+      <div className="mb-4 flex justify-center ">
+        <QRCode value={JSON.stringify(qrDetails)} />
+      </div>
+      <div className="flex items-center mx-auto w-full justify-center">
+        <SocialIcon
+          url="https://twitter.com/tripathigrows"
+          className="mx-4 "
+          style={{ width: "32px", height: "32px" }}
+          color="#cccccc"
+          bgColor="#9CA3AF"
+        />
+        <SocialIcon
+          url="https://www.linkedin.com/in/manas-tripathi-dev/"
+          className="mx-4 "
+          style={{ width: "32px", height: "32px" }}
+          color="#cccccc"
+          bgColor="#9CA3AF"
+        />
+        <SocialIcon
+          url="https://www.t.me/scotch1998"
+          className="mx-4 "
+          style={{ width: "32px", height: "32px" }}
+          color="#cccccc"
+          bgColor="#9CA3AF"
+        />
+      </div>
+      <div className="grid grid-cols-3 my-4 mx-8">
+        <div className="flex flex-col items-center">
+          <span className="text-gray-900 text-md">10</span>
+          <span className="text-gray-500 text-sm">Bumpped</span>
+        </div>
+        <div className="flex flex-col items-center">
+          <span className="text-gray-900 text-md">10</span>
+          <span className="text-gray-500 text-sm">Attended</span>
+        </div>
+        <div className="flex flex-col items-center">
+          <span className="text-gray-900 text-md">10</span>
+          <span className="text-gray-500 text-sm">Going</span>
         </div>
       </div>
+      <div className="bg-gray-300 w-full h-[1px]"></div>
+      <div className="flex items-start my-4">
+        <span
+          onClick={() => {
+            setCurrentTab("About");
+          }}
+          className={`cursor-pointer text-lg font-semibold flex items-center  flex-col  mr-2 min-w-[60px] ${
+            currentTab == "About" ? "text-gray-900 " : "text-gray-600"
+          }`}
+        >
+          About
+          {currentTab == "About" && <Thunderline width={60} />}
+        </span>
+        <span
+          onClick={() => {
+            setCurrentTab("Bumpped");
+          }}
+          className={`cursor-pointer text-lg font-semibold flex items-center  flex-col mr-2 min-w-[60px] ${
+            currentTab == "Bumpped" ? "text-gray-900 " : "text-gray-500"
+          }`}
+        >
+          Bumpped
+          {currentTab == "Bumpped" && <Thunderline width={60} />}{" "}
+        </span>
+        <span
+          onClick={() => {
+            setCurrentTab("Event");
+          }}
+          className={`cursor-pointer text-lg font-semibold flex items-center  flex-col  mr-2 min-w-[60px] ${
+            currentTab == "Event" ? "text-gray-900 " : "text-gray-600"
+          }`}
+        >
+          Event
+          {currentTab == "Event" && <Thunderline width={60} />}
+        </span>
+        <span
+          onClick={() => {
+            setCurrentTab("POaP");
+          }}
+          className={`cursor-pointer text-lg font-semibold flex items-center  min-w-[60px] flex-col ${
+            currentTab == "POaP" ? "text-gray-900 " : "text-gray-500"
+          }`}
+        >
+          POaP
+          {currentTab == "POaP" && <Thunderline width={60} />}{" "}
+        </span>
+      </div>
+      {currentTab == "About" && (
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam nobis,
+          sapiente minus qui sed cumque dolorem nesciunt enim dicta ducimus hic
+          temporibus provident! Consequuntur at odio rerum veniam? Animi rerum
+          molestias explicabo incidunt mollitia atque iste perferendis qui
+          temporibus optio repudiandae modi unde officia expedita tempore, odio
+          quia obcaecati laudantium?
+        </p>
+      )}
+      {currentTab == "Bumpped" && (
+        <>
+          <SingleUserCard />
+          <SingleUserCard />
+          <SingleUserCard />
+          <SingleUserCard />
+          <SingleUserCard />
+          <SingleUserCard />
+          <SingleUserCard />
+          <SingleUserCard />
+          <SingleUserCard />
+          <SingleUserCard />
+        </>
+      )}
+      {currentTab == "Event" && (
+        <>
+          <CompactEventCard />
+          <CompactEventCard />
+          <CompactEventCard />
+          <CompactEventCard />
+          <CompactEventCard />
+          <CompactEventCard />
+          <CompactEventCard />
+          <CompactEventCard />
+        </>
+      )}
+      {userProfile?.attended?.length > 0 && currentTab == "POaP" && (
+        <div>
+          {/* <h4 className="text-lg text-gray-300 my-2 font-bold">POAPs</h4> */}
+          <div className="overflow-x-scroll flex items-center">
+            {userProfile?.attended.map((singlePoap, index) => {
+              return (
+                <>
+                  <div key={index} className="flex flex-col items-center mr-4 ">
+                    <Link
+                      href={`/event/${singlePoap.event}`}
+                      className="whitespace-nowrap inline-flex items-center justify-center h-12 w-12 rounded-full bg-purple-200 text-purple-800 font-bold text-xl "
+                    >
+                      {singlePoap.eventName[0]}
+                    </Link>
+                  </div>
+                  <div key={index} className="flex flex-col items-center mr-4 ">
+                    <Link
+                      href={`/event/${singlePoap.event}`}
+                      className="whitespace-nowrap inline-flex items-center justify-center h-12 w-12 rounded-full bg-purple-200 text-purple-800 font-bold text-xl "
+                    >
+                      {singlePoap.eventName[0]}
+                    </Link>
+                  </div>
+                </>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

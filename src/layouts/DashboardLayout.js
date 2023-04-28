@@ -15,6 +15,7 @@ import {
   CurrencyDollarIcon,
   QrCodeIcon,
   PlusCircleIcon,
+  TicketIcon,
 } from "@heroicons/react/24/outline";
 import {
   MagnifyingGlassIcon,
@@ -31,6 +32,7 @@ import customAxios from "@/utils/axios";
 import { giveRandomIcon, linkGenerator } from "@/utils/helpers";
 import moment from "moment/moment";
 import dynamic from "next/dynamic";
+import { BumppLogo } from "@/utils/Icons";
 const DynamicQrReader = dynamic(
   () => import("@/components/modals/QRReaderModal"),
   {
@@ -40,15 +42,15 @@ const DynamicQrReader = dynamic(
 );
 const navigation = [
   {
-    name: "Explore DAO-CON",
-    href: "/explore",
-    icon: GlobeAltIcon,
-    current: false,
-  },
-  {
     name: "Sponsors",
     href: "/sponsor",
     icon: CurrencyDollarIcon,
+    current: false,
+  },
+  {
+    name: "Tickets",
+    href: "/tickets",
+    icon: TicketIcon,
     current: false,
   },
   { name: "DAO-CON team", href: "/team", icon: UserGroupIcon, current: false },
@@ -74,6 +76,8 @@ export default function DashboardLayout({
   currentTab,
   canSearch,
   unpadded,
+  hideBottomNav,
+  hideChat,
 }) {
   // ! Hooks ****************************************************************************************************************
   const router = useRouter();
@@ -215,13 +219,13 @@ export default function DashboardLayout({
                   </div>
                 </Transition.Child>
                 {/* Sidebar component, swap this element with another sidebar if you like */}
-                <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4 ring-1 ring-white/10">
+                <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-100 px-6 pb-4 ring-1 ring-white/10">
                   <div className="flex h-16 shrink-0 mt-8 flex-col items-start">
-                    <span className="text-3xl font-bold text-purple-200">
+                    <span className="text-3xl font-bold text-gray-700">
                       DAO-CON 2023.
                     </span>
 
-                    <span className="text-lg text-purple-300">
+                    <span className="text-lg text-gray-900">
                       Paris, France.
                     </span>
                   </div>
@@ -240,8 +244,8 @@ export default function DashboardLayout({
                                 }}
                                 className={classNames(
                                   item.current
-                                    ? "bg-gray-800 text-white"
-                                    : "text-gray-400 hover:text-white hover:bg-gray-800",
+                                    ? "bg-gray-200 text-gray-900"
+                                    : "text-gray-800 hover:text-gray-900 hover:bg-gray-200",
                                   "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
                                 )}
                               >
@@ -270,10 +274,10 @@ export default function DashboardLayout({
           </div>
         </Dialog>
       </Transition.Root>
-      {userContext?.telegramDetails && (
+      {userContext?.telegramDetails && !hideChat && (
         <Link
           type="button"
-          className="fixed bottom-20 z-[65] right-6 drop-shadow-xl rounded-full bg-indigo-600 p-2 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          className="fixed bottom-20 z-[65] right-6 drop-shadow-xl rounded-full bg-gray-600 p-2 text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
           href={"https://telegram.me/MukundChourey"}
           onClick={() => {
             mixpanel("generic_link_click", {
@@ -292,7 +296,7 @@ export default function DashboardLayout({
           <div className="flex h-16 shrink-0 items-center">
             <img
               className="h-8 w-auto"
-              src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
+              src="https://tailwindui.com/img/logos/mark.svg?color=gray&shade=500"
               alt="Your Company"
             />
           </div>
@@ -364,8 +368,8 @@ export default function DashboardLayout({
       </div>
 
       <div className="lg:pl-72">
-        <div className="fixed top-0 w-full z-40 flex h-12 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
-          <button
+        <div className="fixed top-0 w-full z-40 flex h-12 shrink-0 items-center justify-between gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
+          {/* <button
             type="button"
             className="-m-2.5 p-2.5 text-gray-700 lg:hidden"
             onClick={() => {
@@ -375,257 +379,260 @@ export default function DashboardLayout({
               setSidebarOpen(true);
             }}
           >
-            <span className="sr-only">Open sidebar</span>
+            <span className="sr-only">Profile</span>
             <Bars3Icon className="h-6 w-6" aria-hidden="true" />
-          </button>
-
-          {/* Separator */}
-          <div
-            className="h-6 w-px bg-gray-900/10 lg:hidden"
-            aria-hidden="true"
-          />
-
-          <div className="flex flex-1 gap-x-4 justify-between self-stretch lg:gap-x-6">
-            {canSearch ? (
-              <form className="relative flex w-full" action="#" method="GET">
-                <Listbox value={selected} onChange={setSelected}>
-                  {({ open }) => (
-                    <>
-                      <div className="relative w-full">
-                        <div className="flex items-center justify-between w-full h-full">
-                          <label htmlFor="search-field" className="sr-only">
-                            Search
-                          </label>
-                          <input
-                            id="search-field"
-                            className="block h-full w-full border-0 py-0 pl-0 pr-0 text-gray-900 placeholder:text-gray-400 text-sm focus:outline-none focus:border-none focus:ring-"
-                            placeholder="Looking for something?"
-                            type="search"
-                            name="search"
-                            value={searchTerm}
-                            onChange={(ev) => {
-                              setSearchTerm(ev.target.value);
-                            }}
-                          />
-                          <Listbox.Button
-                            onClick={fetchSearchResults}
-                            className="inline-flex items-center gap-x-1.5 px-2 py-1.5 text-sm font-semibold text-indigo-600"
-                          >
-                            <MagnifyingGlassIcon
-                              width={20}
-                              aria-hidden="true"
-                              color="rgb(17 24 39)"
-                            />
-                          </Listbox.Button>
-                        </div>
-
-                        <Transition
-                          show={open}
-                          as={Fragment}
-                          leave="transition ease-in duration-100"
-                          leaveFrom="opacity-100"
-                          leaveTo="opacity-0"
-                        >
-                          <Listbox.Options className="fixed z-10 mt-1 left-[0.5vw] max-h-[450px] w-[99vw] overflow-auto rounded-md bg-white py-1 text-base shadow-xl focus:outline-none sm:text-sm">
-                            {searchresults ? (
-                              <div>
-                                {searchresults.events && (
-                                  <div className="p-4">
-                                    <h3 className="text-indigo-900 font-semibold text-xl">
-                                      Events
-                                    </h3>
-                                    {searchresults.events.length > 0 ? (
-                                      <div>
-                                        {searchresults.events.map(
-                                          (singleResult) => {
-                                            return (
-                                              <div
-                                                key={singleResult.id}
-                                                onClick={() => {
-                                                  router.push(
-                                                    `/event/${singleResult.id}`
-                                                  );
-                                                }}
-                                                className="text-indigo-800 text-sm border-[1px] border-purple-950 rounded-lg p-2 my-2 flex items-center justify-between"
-                                              >
-                                                <span className="flex flex-col items-left">
-                                                  <span className="text-lg font-medium">
-                                                    {
-                                                      singleResult.fields
-                                                        .Activity
-                                                    }
-                                                  </span>
-                                                  <span>
-                                                    {
-                                                      singleResult.fields
-                                                        .Location
-                                                    }
-                                                  </span>
-                                                </span>
-                                                <span>
-                                                  {moment(
-                                                    singleResult.fields.Start
-                                                  ).format("HH:MM A")}
-                                                </span>
-                                              </div>
-                                            );
-                                          }
-                                        )}
-                                      </div>
-                                    ) : (
-                                      <span className="text-gray-500 text-sm">
-                                        No results for {searchTerm} in Events
-                                      </span>
-                                    )}
-                                  </div>
-                                )}
-                                {searchresults.speakers && (
-                                  <div className="p-4">
-                                    <h3 className="text-indigo-900 font-semibold text-lg">
-                                      Speakers
-                                    </h3>
-                                    {searchresults.speakers.length > 0 ? (
-                                      <div>
-                                        {searchresults.speakers.map(
-                                          (singleResult) => {
-                                            return (
-                                              <div
-                                                key={singleResult.id}
-                                                onClick={() => {
-                                                  router.push(
-                                                    `/speaker/${singleResult.id}`
-                                                  );
-                                                }}
-                                                className="text-indigo-800 text-sm border-[1px] border-purple-950 rounded-lg p-2 my-2 flex items-center justify-between"
-                                              >
-                                                <span className="flex flex-col items-left">
-                                                  <span className="text-lg font-medium">
-                                                    {singleResult.fields.Name}
-                                                  </span>
-                                                  <span>
-                                                    {singleResult.fields.Bio}
-                                                  </span>
-                                                </span>
-                                                <span></span>
-                                              </div>
-                                            );
-                                          }
-                                        )}
-                                      </div>
-                                    ) : (
-                                      <span className="text-gray-500 text-sm">
-                                        No results for {searchTerm} in Speakers
-                                      </span>
-                                    )}
-                                  </div>
-                                )}
-                                {searchresults.sponsors && (
-                                  <div className="p-4">
-                                    <h3 className="text-indigo-900 font-semibold text-lg">
-                                      Sponsors
-                                    </h3>
-                                    {searchresults.sponsors.length > 0 ? (
-                                      <div>
-                                        {searchresults.sponsors.map(
-                                          (singleResult) => {
-                                            return (
-                                              <div
-                                                key={singleResult.id}
-                                                onClick={() => {
-                                                  router.push(
-                                                    `/sponsor/${singleResult.id}`
-                                                  );
-                                                }}
-                                                className="text-indigo-800 text-sm border-[1px] border-purple-950 rounded-lg p-2 my-2 flex items-center justify-between"
-                                              >
-                                                <span className="flex flex-col items-left">
-                                                  <span className="text-lg font-medium">
-                                                    {singleResult.fields.Name}
-                                                  </span>
-                                                  <span>
-                                                    {singleResult.fields.Bio}
-                                                  </span>
-                                                </span>
-                                                <span></span>
-                                              </div>
-                                            );
-                                          }
-                                        )}
-                                      </div>
-                                    ) : (
-                                      <span className="text-gray-500 text-sm">
-                                        No results for {searchTerm} in Sponsors
-                                      </span>
-                                    )}
-                                  </div>
-                                )}
-                                {searchresults.hotels && (
-                                  <div className="p-4">
-                                    <h3 className="text-indigo-900 font-semibold text-lg">
-                                      Hotels
-                                    </h3>
-                                    {searchresults.hotels.length > 0 ? (
-                                      <div>
-                                        {searchresults.hotels.map(
-                                          (singleResult) => {
-                                            return (
-                                              <div
-                                                key={singleResult.id}
-                                                onClick={() => {
-                                                  router.push(
-                                                    `tel:${singleResult.fields.Contact}`
-                                                  );
-                                                }}
-                                                className="text-indigo-800 text-sm border-[1px] border-purple-950 rounded-lg p-2 my-2 flex items-center justify-between"
-                                              >
-                                                <span className="flex flex-col items-left">
-                                                  <span className="text-lg font-medium">
-                                                    {singleResult.fields.Name}
-                                                  </span>
-                                                  <span>
-                                                    {
-                                                      singleResult.fields
-                                                        .Address
-                                                    }
-                                                  </span>
-                                                </span>
-                                                <span></span>
-                                              </div>
-                                            );
-                                          }
-                                        )}
-                                      </div>
-                                    ) : (
-                                      <span className="text-gray-500 text-sm">
-                                        No results for {searchTerm} in Hotels
-                                      </span>
-                                    )}
-                                  </div>
-                                )}
-                              </div>
-                            ) : (
-                              <div className="w-full flex justify-center">
-                                <div
-                                  role="status"
-                                  className="w-full animate-pulse flex flex-col items-start bg-purple-100 px-2 pt-4 rounded-lg"
-                                >
-                                  <div className="h-6 my-1 bg-purple-200 rounded-full dark:bg-slate-700 w-20"></div>
-                                  <div className="h-12 my-1 bg-purple-200 rounded-lg dark:bg-slate-700 w-full mx-auto"></div>
-                                  <div className="h-12 my-1 bg-purple-200 rounded-lg dark:bg-slate-700 w-full mx-auto"></div>
-                                </div>
-                              </div>
-                            )}
-                          </Listbox.Options>
-                        </Transition>
-                      </div>
-                    </>
-                  )}
-                </Listbox>
-              </form>
-            ) : (
-              <div></div>
-            )}
+          </button> */}
+          <Link href={"/profile"}>
+            <img
+              className="inline-block h-8 w-8 rounded-full ring-2 ring-white"
+              src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.25&w=256&h=256&q=80"
+              alt=""
+            />
+          </Link>
+          <BumppLogo />
+          <div className="flex  ">
             <div className="flex items-center gap-x-4 lg:gap-x-6">
+              {canSearch ? (
+                <form className="relative flex w-full" action="#" method="GET">
+                  <Listbox value={selected} onChange={setSelected}>
+                    {({ open }) => (
+                      <>
+                        <div className="relative w-full">
+                          <div className="flex items-center justify-between max-w-[100px] h-full">
+                            <label htmlFor="search-field" className="sr-only">
+                              Search
+                            </label>
+                            <input
+                              id="search-field"
+                              className="block h-full w-full border-0 py-0 pl-0 pr-0 text-gray-900 placeholder:text-gray-600 text-sm !focus:border-none !focus-visible:border-none focus:ring-transparent "
+                              placeholder="Search"
+                              type="search"
+                              name="search"
+                              value={searchTerm}
+                              onChange={(ev) => {
+                                setSearchTerm(ev.target.value);
+                              }}
+                            />
+                            <Listbox.Button
+                              onClick={fetchSearchResults}
+                              className="inline-flex items-center gap-x-1.5 px-2 py-1.5 text-sm font-semibold "
+                            >
+                              <MagnifyingGlassIcon
+                                width={20}
+                                aria-hidden="true"
+                                color="rgb(17 24 39)"
+                              />
+                            </Listbox.Button>
+                          </div>
+
+                          <Transition
+                            show={open}
+                            as={Fragment}
+                            leave="transition ease-in duration-100"
+                            leaveFrom="opacity-100"
+                            leaveTo="opacity-0"
+                          >
+                            <Listbox.Options className="fixed z-10 mt-3 left-[0.5vw] max-h-[450px] w-[99vw] overflow-auto rounded-md bg-white py-1 text-base shadow-xl focus:outline-none sm:text-sm">
+                              {searchresults ? (
+                                <div>
+                                  {searchresults.events && (
+                                    <div className="p-4">
+                                      <h3 className="text-gray-900 font-semibold text-xl">
+                                        Events
+                                      </h3>
+                                      {searchresults.events.length > 0 ? (
+                                        <div>
+                                          {searchresults.events.map(
+                                            (singleResult) => {
+                                              return (
+                                                <div
+                                                  key={singleResult.id}
+                                                  onClick={() => {
+                                                    router.push(
+                                                      `/event/${singleResult.id}`
+                                                    );
+                                                  }}
+                                                  className="text-gray-800 text-sm border-[1px] border-gray-300 rounded-lg p-2 my-2 flex items-center justify-between"
+                                                >
+                                                  <span className="flex flex-col items-left">
+                                                    <span className="text-lg font-medium">
+                                                      {
+                                                        singleResult.fields
+                                                          .Activity
+                                                      }
+                                                    </span>
+                                                    <span>
+                                                      {
+                                                        singleResult.fields
+                                                          .Location
+                                                      }
+                                                    </span>
+                                                  </span>
+                                                  <span>
+                                                    {moment(
+                                                      singleResult.fields.Start
+                                                    ).format("HH:MM A")}
+                                                  </span>
+                                                </div>
+                                              );
+                                            }
+                                          )}
+                                        </div>
+                                      ) : (
+                                        <span className="text-gray-500 text-sm">
+                                          No results for {searchTerm} in Events
+                                        </span>
+                                      )}
+                                    </div>
+                                  )}
+                                  {searchresults.speakers && (
+                                    <div className="p-4">
+                                      <h3 className="text-gray-900 font-semibold text-lg">
+                                        Speakers
+                                      </h3>
+                                      {searchresults.speakers.length > 0 ? (
+                                        <div>
+                                          {searchresults.speakers.map(
+                                            (singleResult) => {
+                                              return (
+                                                <div
+                                                  key={singleResult.id}
+                                                  onClick={() => {
+                                                    router.push(
+                                                      `/speaker/${singleResult.id}`
+                                                    );
+                                                  }}
+                                                  className="text-gray-800 text-sm border-[1px] border-gray-300 rounded-lg p-2 my-2 flex items-center justify-between"
+                                                >
+                                                  <span className="flex flex-col items-left">
+                                                    <span className="text-lg font-medium">
+                                                      {singleResult.fields.Name}
+                                                    </span>
+                                                    <span>
+                                                      {singleResult.fields.Bio}
+                                                    </span>
+                                                  </span>
+                                                  <span></span>
+                                                </div>
+                                              );
+                                            }
+                                          )}
+                                        </div>
+                                      ) : (
+                                        <span className="text-gray-500 text-sm">
+                                          No results for {searchTerm} in
+                                          Speakers
+                                        </span>
+                                      )}
+                                    </div>
+                                  )}
+                                  {searchresults.sponsors && (
+                                    <div className="p-4">
+                                      <h3 className="text-gray-900 font-semibold text-lg">
+                                        Sponsors
+                                      </h3>
+                                      {searchresults.sponsors.length > 0 ? (
+                                        <div>
+                                          {searchresults.sponsors.map(
+                                            (singleResult) => {
+                                              return (
+                                                <div
+                                                  key={singleResult.id}
+                                                  onClick={() => {
+                                                    router.push(
+                                                      `/sponsor/${singleResult.id}`
+                                                    );
+                                                  }}
+                                                  className="text-gray-800 text-sm border-[1px] border-gray-300 rounded-lg p-2 my-2 flex items-center justify-between"
+                                                >
+                                                  <span className="flex flex-col items-left">
+                                                    <span className="text-lg font-medium">
+                                                      {singleResult.fields.Name}
+                                                    </span>
+                                                    <span>
+                                                      {singleResult.fields.Bio}
+                                                    </span>
+                                                  </span>
+                                                  <span></span>
+                                                </div>
+                                              );
+                                            }
+                                          )}
+                                        </div>
+                                      ) : (
+                                        <span className="text-gray-500 text-sm">
+                                          No results for {searchTerm} in
+                                          Sponsors
+                                        </span>
+                                      )}
+                                    </div>
+                                  )}
+                                  {searchresults.hotels && (
+                                    <div className="p-4">
+                                      <h3 className="text-gray-900 font-semibold text-lg">
+                                        Hotels
+                                      </h3>
+                                      {searchresults.hotels.length > 0 ? (
+                                        <div>
+                                          {searchresults.hotels.map(
+                                            (singleResult) => {
+                                              return (
+                                                <div
+                                                  key={singleResult.id}
+                                                  onClick={() => {
+                                                    router.push(
+                                                      `tel:${singleResult.fields.Contact}`
+                                                    );
+                                                  }}
+                                                  className="text-gray-800 text-sm border-[1px] border-gray-300 rounded-lg p-2 my-2 flex items-center justify-between"
+                                                >
+                                                  <span className="flex flex-col items-left">
+                                                    <span className="text-lg font-medium">
+                                                      {singleResult.fields.Name}
+                                                    </span>
+                                                    <span>
+                                                      {
+                                                        singleResult.fields
+                                                          .Address
+                                                      }
+                                                    </span>
+                                                  </span>
+                                                  <span></span>
+                                                </div>
+                                              );
+                                            }
+                                          )}
+                                        </div>
+                                      ) : (
+                                        <span className="text-gray-500 text-sm">
+                                          No results for {searchTerm} in Hotels
+                                        </span>
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
+                              ) : (
+                                <div className="w-full flex justify-center">
+                                  <div
+                                    role="status"
+                                    className="w-full animate-pulse flex flex-col items-start bg-gray-100 px-2 pt-4 rounded-lg"
+                                  >
+                                    <div className="h-6 my-1 bg-gray-200 rounded-full dark:bg-slate-700 w-20"></div>
+                                    <div className="h-12 my-1 bg-gray-200 rounded-lg dark:bg-slate-700 w-full mx-auto"></div>
+                                    <div className="h-12 my-1 bg-gray-200 rounded-lg dark:bg-slate-700 w-full mx-auto"></div>
+                                  </div>
+                                </div>
+                              )}
+                            </Listbox.Options>
+                          </Transition>
+                        </div>
+                      </>
+                    )}
+                  </Listbox>
+                </form>
+              ) : (
+                <div></div>
+              )}
               <QrCodeIcon
                 width={24}
                 color="rgb(17 24 39)"
@@ -633,7 +640,7 @@ export default function DashboardLayout({
                   setQrModalOpen(true);
                 }}
               />
-              <button
+              {/* <button
                 onClick={() => {
                   mixpanel("generic_button_click", {
                     buttonText: "Open announcements",
@@ -668,13 +675,13 @@ export default function DashboardLayout({
                     leaveTo="opacity-0 translate-y-1"
                   >
                     <Popover.Panel className="absolute -right-0 z-10 mt-6 flex w-[92vw] max-w-[360px]">
-                      <div className="w-screen max-w-md flex-auto overflow-hidden rounded-lg bg-purple-100 text-sm leading-6 shadow-lg ring-1 ring-gray-900/5">
+                      <div className="w-screen max-w-md flex-auto overflow-hidden rounded-lg bg-gray-100 text-sm leading-6 shadow-lg ring-1 ring-gray-900/5">
                         <div className="flex flex-col items-left w-full pt-2 pb-4">
-                          <span className="flex items-center justify-between text-2xl pl-6 my-4 font-semibold text-left text-purple-950">
+                          <span className="flex items-center justify-between text-2xl pl-6 my-4 font-semibold text-left text-gray-950">
                             Announcements
                             <button
                               type="button"
-                              className="inline-flex mr-4 items-center gap-x-1.5 rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-lg hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                              className="inline-flex mr-4 items-center gap-x-1.5 rounded-md bg-gray-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-lg hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
                               onClick={() => {
                                 router.push("/broadcast");
                                 mixpanel("generic_button_click", {
@@ -723,10 +730,10 @@ export default function DashboardLayout({
                                         {giveRandomIcon()}
                                       </span>
                                       <div className="flex flex-col items-left ml-4">
-                                        <span className="text-purple-950 text-lg text-left font-medium">
+                                        <span className="text-gray-950 text-lg text-left font-medium">
                                           {singleAnnouncement.title}
                                         </span>
-                                        <span className="text-purple-600 text-left">
+                                        <span className="text-gray-600 text-left">
                                           {singleAnnouncement.description}
                                         </span>
                                       </div>
@@ -748,11 +755,11 @@ export default function DashboardLayout({
                     </Popover.Panel>
                   </Transition>
                 </Popover>
-              </button>
-              <div
+              </button> */}
+              {/* <div
                 className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10"
                 aria-hidden="true"
-              />
+              /> */}
             </div>
           </div>
         </div>
@@ -761,72 +768,95 @@ export default function DashboardLayout({
             {children}
           </div>
         </main>
-        <span className="isolate border-0 inline-flex fixed -bottom-0.5 w-screen bg-slate-500 shadow-xl">
-          <Link
-            href={"/schedule"}
-            onClick={() => {
-              mixpanel("bottom_nav_link_click", {
-                source_page: router.pathname,
-                destinationUrl: "/schedule",
-                triggered_location: "bottom_nav",
-              });
-            }}
-            className={`relative border-r border-gray-400 justify-center flex-col text-center w-full inline-flex items-center px-3 my-2 text-sm text-white focus:z-10 ${
-              currentTab == "Schedule" ? "font-semibold" : "font-light"
-            }`}
-          >
-            <StarIcon
-              color="#ffffff"
-              width={16}
-              strokeWidth={currentTab == "Schedule" ? 3 : 1}
-              className="mb-1"
-            />
-            <span>Schedule</span>
-          </Link>
-          <Link
-            href={"/events"}
-            onClick={() => {
-              mixpanel("bottom_nav_link_click", {
-                source_page: router.pathname,
-                destinationUrl: "/events",
-                triggered_location: "bottom_nav",
-              });
-            }}
-            className={`relative border-r border-gray-400 justify-center flex-col text-center w-full inline-flex items-center px-3 my-2 text-sm text-white focus:z-10 ${
-              currentTab == "Events" ? "font-semibold" : "font-light"
-            }`}
-          >
-            <StarIcon
-              color="#ffffff"
-              width={16}
-              strokeWidth={currentTab == "Events" ? 3 : 1}
-              className="mb-1"
-            />
-            <span>Events</span>
-          </Link>
-
-          <Link
-            href="/profile"
-            onClick={() => {
-              mixpanel("bottom_nav_link_click", {
-                source_page: router.pathname,
-                destinationUrl: "/profile",
-                triggered_location: "bottom_nav",
-              });
-            }}
-            className={`relative justify-center flex-col text-center w-full -ml-px inline-flex items-center px-3 my-2 text-sm font-light text-white focus:z-10 ${
-              currentTab == "Profile" ? "font-semibold" : "font-light"
-            }`}
-          >
-            <UserCircleIcon
-              color="#ffffff"
-              strokeWidth={currentTab == "Profile" ? 3 : 1}
-              width={16}
-              className="mb-1"
-            />
-            <span>Profile</span>
-          </Link>
-        </span>
+        {!hideBottomNav && (
+          <span className="isolate border-0 inline-flex fixed -bottom-0.5 w-screen bg-white shadow-xl border-t border-gray-200">
+            <Link
+              href={"/events"}
+              onClick={() => {
+                mixpanel("bottom_nav_link_click", {
+                  source_page: router.pathname,
+                  destinationUrl: "/events",
+                  triggered_location: "bottom_nav",
+                });
+              }}
+              className={`relative justify-center flex-col text-center w-full inline-flex items-center px-3 my-2 text-sm focus:z-10 ${
+                currentTab == "Events"
+                  ? "font-semibold text-gray-900"
+                  : "font-light text-gray-700"
+              }`}
+            >
+              <CalendarIcon
+                width={16}
+                strokeWidth={currentTab == "Events" ? 3 : 1}
+                className="mb-1"
+              />
+              <span>Events</span>
+            </Link>
+            <Link
+              href={"/explore"}
+              onClick={() => {
+                mixpanel("bottom_nav_link_click", {
+                  source_page: router.pathname,
+                  destinationUrl: "/explore",
+                  triggered_location: "bottom_nav",
+                });
+              }}
+              className={`relative justify-center flex-col text-center w-full inline-flex items-center px-3 my-2 text-sm focus:z-10 ${
+                currentTab == "Explore"
+                  ? "font-semibold text-gray-900"
+                  : "font-light text-gray-700"
+              }`}
+            >
+              <GlobeAltIcon
+                width={16}
+                strokeWidth={currentTab == "Explore" ? 3 : 1}
+                className="mb-1"
+              />
+              <span>Explore</span>
+            </Link>
+            <Link
+              href="/announcements"
+              onClick={() => {
+                mixpanel("bottom_nav_link_click", {
+                  source_page: router.pathname,
+                  destinationUrl: "/announcements",
+                  triggered_location: "bottom_nav",
+                });
+              }}
+              className={`relative justify-center flex-col text-center w-full -ml-px inline-flex items-center px-3 my-2 text-sm font-light focus:z-10 ${
+                currentTab == "Announcements"
+                  ? "font-semibold text-gray-900"
+                  : "font-light text-gray-700"
+              }`}
+            >
+              <BellIcon
+                strokeWidth={currentTab == "Announcements" ? 3 : 1}
+                width={16}
+                className="mb-1"
+              />
+              <span>Announcement</span>
+            </Link>
+            <Link
+              href="#"
+              onClick={() => {
+                mixpanel("bottom_nav_link_click", {
+                  source_page: router.pathname,
+                  destinationUrl: "sidebar",
+                  triggered_location: "bottom_nav",
+                });
+                setSidebarOpen(true);
+              }}
+              className={`relative justify-center flex-col text-center w-full -ml-px inline-flex items-center px-3 my-2 text-sm font-light focus:z-10 ${
+                currentTab == "Profile"
+                  ? "font-semibold text-gray-900"
+                  : "font-light text-gray-700"
+              }`}
+            >
+              <Bars3Icon width={16} className="mb-1" />
+              <span>More</span>
+            </Link>
+          </span>
+        )}
       </div>
       <DynamicQrReader open={qrModalOpen} setOpen={setQrModalOpen} />
     </div>

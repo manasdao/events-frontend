@@ -1,3 +1,6 @@
+import { ArrowLeftIcon, ShareIcon } from "@heroicons/react/24/outline";
+import { useRouter } from "next/router";
+
 const people = [
   // More people...
   {
@@ -63,14 +66,25 @@ const people = [
 ];
 
 export default function Example() {
+  const { back } = useRouter();
   return (
-    <div className="h-screen py-12 sm:py-32">
+    <div className="h-screen pt-8 sm:py-32 text-gray-900">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="flex items-center w-full justify-between mb-8">
+          <ArrowLeftIcon
+            onClick={back}
+            className=""
+            width={24}
+            strokeWidth={2}
+          />
+          {/* <ShareIcon className="" width={24} strokeWidth={2} /> */}
+          <div></div>
+        </div>
         <div className="mx-auto max-w-2xl lg:mx-0">
-          <h2 className="text-3xl font-bold tracking-tight text-gray-100 sm:text-4xl">
+          <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
             Our team
           </h2>
-          <p className="mt-6 text-lg leading-8 text-gray-300">
+          <p className="mt-6 text-lg leading-8 text-gray-700">
             We’re a dynamic group of individuals who are passionate about what
             we do and dedicated to delivering the best results for our clients.
           </p>
@@ -86,10 +100,10 @@ export default function Example() {
                 src={person.imageUrl}
                 alt=""
               />
-              <h3 className="mt-6 text-base font-semibold leading-7 tracking-tight text-gray-300">
+              <h3 className="mt-6 text-base font-semibold leading-7 tracking-tight text-gray-900">
                 {person.name}
               </h3>
-              <p className="text-sm leading-6 text-gray-400">{person.role}</p>
+              <p className="text-sm leading-6 text-gray-500">{person.role}</p>
             </li>
           ))}
         </ul>

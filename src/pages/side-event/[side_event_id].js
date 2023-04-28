@@ -45,7 +45,7 @@ function SingleEvent() {
   };
   const fetchSingleEvent = () => {
     customAxios
-      .get(`/airtable/events?eventId=${query.event_id}`, {
+      .get(`/airtable/events?eventId=${query.side_event_id}`, {
         headers: { workspace: "2" },
       })
       .then((res) => {
@@ -61,8 +61,8 @@ function SingleEvent() {
   };
   // ! Local effects
   useEffect(() => {
-    if (query.event_id) fetchSingleEvent();
-  }, [query.event_id]);
+    if (query.side_event_id) fetchSingleEvent();
+  }, [query.side_event_id]);
   console.log("eventDetails", eventDetails);
   return (
     <DashboardLayout hideBottomNav hideChat>
@@ -133,16 +133,42 @@ function SingleEvent() {
               About
               {currentTab == "About" && <Thunderline />}
             </span>
+            {eventDetails?.fields?.SpeakerNames?.length > 0 && (
+              <span
+                onClick={() => {
+                  setCurrentTab("Speakers");
+                }}
+                className={`cursor-pointer text-lg font-semibold flex items-center min-w-[81px] flex-col mr-4 ${
+                  currentTab == "Speakers" ? "text-gray-900 " : "text-gray-500"
+                }`}
+              >
+                Speakers
+                {currentTab == "Speakers" && <Thunderline />}{" "}
+              </span>
+            )}
+            {eventDetails?.fields?.SponsorNames?.length > 0 && (
+              <span
+                onClick={() => {
+                  setCurrentTab("Sponsors");
+                }}
+                className={`cursor-pointer text-lg font-semibold flex items-center min-w-[81px] flex-col mr-4 ${
+                  currentTab == "Sponsors" ? "text-gray-900 " : "text-gray-500"
+                }`}
+              >
+                Sponsors
+                {currentTab == "Sponsors" && <Thunderline />}{" "}
+              </span>
+            )}
             <span
               onClick={() => {
                 setCurrentTab("Going");
               }}
-              className={`cursor-pointer text-lg font-semibold flex items-center min-w-[81px] flex-col ${
-                currentTab == "Going" ? "text-gray-900 " : "text-gray-500"
+              className={`cursor-pointer text-lg font-semibold flex items-center min-w-[81px] flex-col mr-4 ${
+                currentTab == "Going" ? "text-gray-900 " : "text-gray-600"
               }`}
             >
               9 Going
-              {currentTab == "Going" && <Thunderline />}{" "}
+              {currentTab == "Going" && <Thunderline />}
             </span>
           </div>
           {currentTab == "About" && (
@@ -174,6 +200,19 @@ function SingleEvent() {
               <SingleUserCard />
             </div>
           )}
+          {currentTab == "Speakers" && (
+            <div>
+              <SingleUserCard />
+              <SingleUserCard />
+            </div>
+          )}
+          {currentTab == "Sponsors" && (
+            <div>
+              <SingleUserCard />
+              <SingleUserCard />
+              <SingleUserCard />
+            </div>
+          )}
           <div className="fixed bottom-0 w-full left-0 bg-white p-2 border-t border-gray-200">
             <button
               onClick={() => {
@@ -185,12 +224,7 @@ function SingleEvent() {
               <CheckIcon width={16} className="mr-2" /> Mark as going
             </button>
           </div>
-          <BottomSheet
-            open={isBottomSheetOpen}
-            onDismiss={() => {
-            setIsBottomSheetOpen(false);
-            }}
-          >
+          <BottomSheet open={isBottomSheetOpen}>
             <div className="p-4 flex items-center flex-col">
               <CalendarColorIcon />
               <span className="text-gray-900 text-lg block my-2">
@@ -201,7 +235,7 @@ function SingleEvent() {
               </span>
               <button
                 onClick={() => {
-                  setIsBottomSheetOpen(false);
+                  setIsBottomSheetOpen(true);
                 }}
                 type="button"
                 className="mt-4 rounded-lg bg-indigo-600 w-full px-3.5 py-2.5 flex items-center justify-center text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
