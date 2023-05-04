@@ -22,6 +22,16 @@ const faqs = [
     answer:
       "Important part of DAOCON will be stages where DAO knowledge and opinions will be shared openly.",
   },
+  {
+    question: "Do we get discounts on hotel stays?",
+    answer:
+      "DAOCON has partnered with Ritz-Carlton and is providing 10% off for all the DAOCON VIP Access attendees",
+  },
+  {
+    question: "Can we connect with the sponsors directly?",
+    answer:
+      "Sponsors host side events around the city which are a great time to interact with them.",
+  },
 ];
 
 export default function Example() {

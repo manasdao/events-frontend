@@ -277,16 +277,19 @@ export default function DashboardLayout({
       {userContext?.telegramDetails && !hideChat && (
         <Link
           type="button"
-          className="fixed bottom-20 z-[65] right-6 drop-shadow-xl rounded-full bg-gray-600 p-2 text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
-          href={"https://telegram.me/MukundChourey"}
+          className="fixed bottom-20 z-[65] right-6 drop-shadow-xl rounded-full bg-gray-600  text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
+          href={"https://t.me/c/1880760794/1"}
           onClick={() => {
             mixpanel("generic_link_click", {
               linkType: "Open telegram",
-              destinationUrl: "https://telegram.me/MukundChourey",
+              destinationUrl: "https://t.me/c/1880760794/1",
             });
           }}
         >
-          <ChatBubbleLeftIcon width={32} />
+          <img
+            className="w-12"
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/512px-Telegram_logo.svg.png?20220101141644"
+          />
         </Link>
       )}
       {/* Static sidebar for desktop */}
@@ -368,7 +371,7 @@ export default function DashboardLayout({
       </div>
 
       <div className="lg:pl-72">
-        <div className="fixed top-0 w-full z-40 flex h-12 shrink-0 items-center justify-between gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
+        <div className="fixed top-0 w-full z-40 flex h-16 shrink-0 items-center justify-between gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
           {/* <button
             type="button"
             className="-m-2.5 p-2.5 text-gray-700 lg:hidden"
@@ -392,7 +395,7 @@ export default function DashboardLayout({
           <BumppLogo />
           <div className="flex  ">
             <div className="flex items-center gap-x-4 lg:gap-x-6">
-              {canSearch ? (
+              {/* {canSearch ? (
                 <form className="relative flex w-full" action="#" method="GET">
                   <Listbox value={selected} onChange={setSelected}>
                     {({ open }) => (
@@ -632,7 +635,7 @@ export default function DashboardLayout({
                 </form>
               ) : (
                 <div></div>
-              )}
+              )} */}
               <QrCodeIcon
                 width={24}
                 color="rgb(17 24 39)"

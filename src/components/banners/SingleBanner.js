@@ -6,7 +6,7 @@ function SingleBanner({
 }) {
   return (
     <div
-      className="bg-white  grid items-center"
+      className="bg-yellow-50  grid items-center m-4 rounded-lg shadow-lg"
       style={{ gridTemplateColumns: "2fr 3fr" }}
     >
       <div className=" pl-4">
@@ -25,7 +25,7 @@ function SingleBanner({
       <img
         src={imageUrl}
         alt="banner img"
-        className="w-full object-cover"
+        className="w-full object-cover rounded-r-lg"
         style={{
           clipPath:
             "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 20% 0%, 0% 0%)",

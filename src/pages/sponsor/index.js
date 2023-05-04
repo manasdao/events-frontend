@@ -9,9 +9,10 @@ import { BoltIcon as BoltIconSolid } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { giveRandomIcon } from "@/utils/helpers";
 import { useRouter } from "next/router";
+import { SocialIcon } from "react-social-icons";
 
 function Sponsors() {
-  const { replace } = useRouter();
+  const { replace, push } = useRouter();
   // ! Local states
   const [allSponsors, setAllSponsors] = useState(null);
   // ! Local handlers
@@ -69,100 +70,110 @@ function Sponsors() {
       <div className="mt-10">
         {allSponsors.map((singleSponsor) => {
           return (
-            <div className="min-w-0 flex-1 my-4" key={singleSponsor.id}>
-              <Link
-                href={`/sponsor/${singleSponsor?.id}`}
-                onClick={() => {
-                  // mixpanel("event_card_click", {
-                  //   source_page: pathname,
-                  //   triggered_location: "events_feed_card",
-                  //   isPicked: activityItem?.isPicked,
-                  //   eventId: activityItem?.id,
-                  //   eventStartTime: moment(activityItem?.fields.Start).format(
-                  //     "DD MMM, YYYY (HH:MM A)"
-                  //   ),
-                  // });
-                }}
-              >
-                <div>
-                  <div className="text-lg">
-                    <p className="font-medium text-gray-100">
-                      {singleSponsor?.fields.Name}
-                    </p>
+            <div
+              className="relative flex items-start space-x-3"
+              key={singleSponsor.id}
+            >
+              <div className="min-w-0 flex-1">
+                <div
+                  onClick={() => {
+                    push(`/event/${singleSponsor?.id}`);
+                  }}
+                >
+                  <div className="border border-gray-300 rounded-lg p-2 mt-4">
+                    <div className=" text-sm text-gray-400">
+                      <div className="flex items-center mb-4">
+                        <img
+                          className=" w-10 h-10 object-cover  rounded-lg"
+                          src={singleSponsor.fields.Image}
+                          alt={singleSponsor?.fields.Name}
+                        />
+                        <p className="font-medium text-gray-900 text-lg  ml-2">
+                          {singleSponsor?.fields.Name}
+                        </p>
+                        <SocialIcon
+                          url={singleSponsor?.fields.Twitter}
+                          style={{
+                            width: "18px",
+                            height: "18px",
+                            marginLeft: "6px",
+                          }}
+                          onClick={(ev) => {
+                            ev.stopPropagation();
+                          }}
+                        />
+                      </div>
+
+                      {singleSponsor.fields.ScheduleName?.length > 0 && (
+                        <div className="flex items-start flex-col text-blue-500">
+                          <span className="text-lg font-medium text-gray-700">
+                            Sponsored events
+                          </span>
+                          {singleSponsor.fields.ScheduleName.map(
+                            (singleSchedule, index) => {
+                              return (
+                                <Link
+                                  href={`/event/${singleSponsor.fields.Schedule[index]}`}
+                                  key={singleSchedule}
+                                  className="flex items-center my-1"
+                                  onClick={(ev) => ev.stopPropagation()}
+                                >
+                                  {singleSchedule}
+                                  <ArrowTopRightOnSquareIcon
+                                    width={16}
+                                    className="ml-2"
+                                  />
+                                </Link>
+                              );
+                            }
+                          )}
+                        </div>
+                      )}
+                      {singleSponsor.fields["Side Events Names"]?.length >
+                        0 && (
+                        <div className="flex items-start flex-col text-blue-500">
+                          <span className="text-lg font-medium text-gray-700">
+                            Side events
+                          </span>
+                          {singleSponsor.fields["Side Events Names"].map(
+                            (singleSchedule, index) => {
+                              return (
+                                <Link
+                                  href={`/side-event/${singleSponsor.fields["Side Events"][index]}`}
+                                  key={singleSchedule}
+                                  className="flex items-center my-1"
+                                  onClick={(ev) => ev.stopPropagation()}
+                                >
+                                  {singleSchedule}
+                                  <ArrowTopRightOnSquareIcon
+                                    width={16}
+                                    className="ml-2"
+                                  />
+                                </Link>
+                              );
+                            }
+                          )}
+                        </div>
+                      )}
+                      {/* <div className="flex items-center text-gray-500">
+                        <span>{singleSponsor?.fields.Location}</span>
+                        <span className="block w-1.5 h-1.5 mx-2 bg-gray-300 rounded-full"></span>
+                        <span>300+ going</span>
+                      </div> */}
+                      <button
+                        type="button"
+                        class="mt-4 w-full inline-flex items-center justify-center  bg-indigo-50 gap-x-2 rounded-md  px-3.5 py-2.5 text-md font-medium text-indigo-700 shadow-sm "
+                        onClick={(ev) => {
+                          ev.stopPropagation();
+                        }}
+                      >
+                        <BoltIcon width={20} />
+                        Mark as interested
+                      </button>
+                    </div>
                   </div>
                 </div>
-                {singleSponsor?.fields.Bio && (
-                  <p className="text-md text-purple-200">
-                    {singleSponsor?.fields.Bio}
-                  </p>
-                )}
-                <div className="mt-2 text-sm text-gray-400">
-                  <img
-                    className="my-4 object-cover w-full rounded-lg"
-                    src={
-                      "https://images.unsplash.com/photo-1604537466158-719b1972feb8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3269&q=80"
-                    }
-                    alt={singleSponsor?.fields.Activity}
-                  />
-                  {singleSponsor?.fields.ScheduleName?.length > 0 && (
-                    <>
-                      <h4 className="text-lg text-gray-200 font-bold mt-4">
-                        Talks
-                      </h4>
-                      <ol className="flex flex-col items-left">
-                        {singleSponsor.fields.ScheduleName.map(
-                          (singleTalk, index) => {
-                            return (
-                              <li key={singleSponsor.fields.Schedule[index]}>
-                                <Link
-                                  className="mt-1 text-purple-300 flex items-center"
-                                  href={`/event/${singleSponsor.fields.Schedule[index]}`}
-                                >
-                                  {giveRandomIcon()} {singleTalk}{" "}
-                                  <ArrowTopRightOnSquareIcon
-                                    width={16}
-                                    className="inline  ml-2"
-                                  />
-                                </Link>
-                              </li>
-                            );
-                          }
-                        )}
-                      </ol>
-                    </>
-                  )}{" "}
-                  {singleSponsor.fields["Side Events Names"]?.length > 0 && (
-                    <>
-                      <h4 className="text-lg text-gray-200 font-bold mt-4">
-                        Side Events
-                      </h4>
-                      <ol className="flex flex-col items-left">
-                        {singleSponsor.fields["Side Events Names"].map(
-                          (singleEvent, index) => {
-                            return (
-                              <li
-                                key={singleSponsor.fields["Side Events"][index]}
-                              >
-                                <Link
-                                  className="mt-1 text-purple-300 flex items-center"
-                                  href={`/event/${singleSponsor.fields["Side Events"][index]}`}
-                                >
-                                  {giveRandomIcon()} {singleEvent}{" "}
-                                  <ArrowTopRightOnSquareIcon
-                                    width={16}
-                                    className="inline  ml-2"
-                                  />
-                                </Link>
-                              </li>
-                            );
-                          }
-                        )}
-                      </ol>
-                    </>
-                  )}
-                </div>
-              </Link>
-              <hr class="my-12 h-px border-t-0 bg-transparent bg-gradient-to-r from-transparent via-neutral-500 to-transparent opacity-25 dark:opacity-100" />
+              </div>
             </div>
           );
         })}

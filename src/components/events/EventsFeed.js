@@ -11,7 +11,7 @@ import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import { UserContext } from "@/contexts/UserContextProvider";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination } from "swiper";
+import { Pagination, Autoplay } from "swiper";
 import "swiper/css";
 import "swiper/css/pagination";
 import SingleBanner from "../banners/SingleBanner";
@@ -74,26 +74,28 @@ function EventsFeed({
   }, [currentTab]);
 
   return (
-    <div className="flow-root mt-2">
+    <div className="flow-root mt-6">
       {" "}
       <Swiper
         pagination={{
           dynamicBullets: true,
         }}
-        modules={[Pagination]}
+        modules={[Pagination, Autoplay]}
         className="events-page-swiper"
+        loop
+        autoplay={{
+          delay: 2500,
+          disableOnInteraction: false,
+        }}
       >
         <SwiperSlide>
-          <SingleBanner />
+          <img src="https://cdn.discordapp.com/attachments/1028914396048662528/1101496653007028234/image.png" />
         </SwiperSlide>
         <SwiperSlide>
-          <SingleBanner />
+          <img src="https://pbs.twimg.com/media/Fr9PaZZXgAAsZXY?format=jpg&name=medium" />
         </SwiperSlide>
         <SwiperSlide>
-          <SingleBanner />
-        </SwiperSlide>
-        <SwiperSlide>
-          <SingleBanner />
+          <img src="https://pbs.twimg.com/media/Fuu4JsAXoAAiWu_?format=jpg&name=large" />
         </SwiperSlide>
       </Swiper>
       <div className="flex items-start my-2 px-4">
@@ -101,22 +103,22 @@ function EventsFeed({
           onClick={() => {
             setCurrentTab("Events");
           }}
-          className={`cursor-pointer text-3xl font-semibold min-w-[81px] flex items-center flex-col mr-4 ${
+          className={`cursor-pointer text-2xl font-semibold min-w-[81px] flex items-center flex-col mr-4 ${
             currentTab == "Events" ? "text-gray-900 " : "text-gray-600"
           }`}
         >
-          Events
+          Browse events
           {currentTab == "Events" && <Thunderline />}
         </span>
         <span
           onClick={() => {
             setCurrentTab("Going");
           }}
-          className={`cursor-pointer text-3xl font-semibold min-w-[81px] flex items-center flex-col ${
+          className={`cursor-pointer text-2xl font-semibold min-w-[81px] flex items-center flex-col ${
             currentTab == "Going" ? "text-gray-900 " : "text-gray-500"
           }`}
         >
-          Going
+          My calendar
           {currentTab == "Going" && <Thunderline />}{" "}
         </span>
       </div>
@@ -173,9 +175,7 @@ function EventsFeed({
                                   <div className=" text-sm text-gray-400">
                                     <img
                                       className="mb-2 object-cover w-full rounded-lg"
-                                      src={
-                                        "https://images.unsplash.com/photo-1604537466158-719b1972feb8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3269&q=80"
-                                      }
+                                      src={activityItem?.fields.images}
                                       alt={activityItem?.fields.Activity}
                                     />
                                     <p className="my-1 text-sm text-gray-500 font-medium">

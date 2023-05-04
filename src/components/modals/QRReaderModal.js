@@ -7,10 +7,11 @@ import customAxios from "@/utils/axios";
 import { toast } from "react-toastify";
 import { UserContext } from "@/contexts/UserContextProvider";
 import { mixpanel } from "@/utils/mixpanel";
+
 function QRReaderModal({ open, setOpen, markAttendance }) {
   const [qrscan, setQrscan] = useState("No result");
   const router = useRouter();
-  const userContext = useContext(UserContext);
+const userContext = useContext(UserContext);
   const handleScan = (data) => {
     try {
       if (data) {
@@ -63,6 +64,7 @@ function QRReaderModal({ open, setOpen, markAttendance }) {
             .then((res) => {
               console.log("connect res", res.data);
               setOpen(false);
+              router.push(dataToConnect.telegram);
               toast.success("Connected");
             })
             .catch((err) => {

@@ -20,6 +20,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect, useState } from "react";
 import { CalendarColorIcon } from "@/utils/Icons";
+import { users } from "@/components/profile/MyProfile";
 export const pickEventForUser = (eventId, isSideEvent, name) => {
   return customAxios.post(
     "/events/pickevent",
@@ -67,7 +68,7 @@ function SingleEvent() {
   return (
     <DashboardLayout hideBottomNav hideChat>
       {eventDetails ? (
-        <section className="mt-6 text-gray-900">
+        <section className="mt-10 text-gray-900">
           <div className="flex items-center justify-between">
             <ArrowLeftIcon
               onClick={back}
@@ -77,11 +78,10 @@ function SingleEvent() {
             />
             <ShareIcon className="" width={24} strokeWidth={2} />
           </div>
-          <img
-            className="my-5 rounded-lg"
-            src="https://images.unsplash.com/photo-1639987759021-bc55a0c96ce1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2344&q=80"
-          />
-          <p className="text-lg font-medium">{eventDetails.fields.Activity}</p>{" "}
+          <img className="my-5 rounded-lg" src={eventDetails.fields.images} />
+          <p className="text-lg font-medium">
+            {eventDetails.fields.Activity}
+          </p>{" "}
           {eventDetails.fields.SpeakerNames?.length > 0 && (
             <div className="flex items-center mb-2 mt-4 text-sm text-gray-700">
               <div className="flex -space-x-1 overflow-hidden">
@@ -147,31 +147,29 @@ function SingleEvent() {
           </div>
           {currentTab == "About" && (
             <p>
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sit
-              architecto ut <strong>adipisci iusto provident</strong> omnis
-              necessitatibus ducimus beatae, veniam assumenda maxime, dicta
-              aspernatur nulla molestiae. Facilis laboriosam dolor inventore
-              magnam magni.
-              <br />
-              <br />
-              fugit reiciendis, tempora maiores expedita, veniam ad quae.
-              beatae, veniam assumenda maxime, dicta aspernatur nulla molestiae.
-              Facilis laboriosam <strong>adipisci iusto provident</strong> dolor
-              inventore magnam magni, et fugit reiciendis, tempora maiores
-              expedita, veniam ad quae.
+              This gamers hackathon is an opportunity for participants to
+              collaborate, build and prototype new gaming-related projects in a
+              supportive environment. Our event aims to foster creativity and
+              facilitate the exchange of ideas and skills through networking and
+              workshops. From game development to esports management, we welcome
+              all ideas and skill levels. Our goal is to create an inclusive and
+              exciting event that showcases the talent and creativity of the
+              gaming community. Let&apos;s build the future of gaming together!
             </p>
           )}
           {currentTab == "Going" && (
             <div>
-              <SingleUserCard />
-              <SingleUserCard />
-              <SingleUserCard />
-              <SingleUserCard />
-              <SingleUserCard />
-              <SingleUserCard />
-              <SingleUserCard />
-              <SingleUserCard />
-              <SingleUserCard />
+              {users.map((singleUser, index) => {
+                if (index > 8) return null;
+                return (
+                  <SingleUserCard
+                    key={singleUser.name}
+                    name={singleUser.name}
+                    designation={singleUser.designation}
+                    imageUrl={singleUser.imageUrl}
+                  />
+                );
+              })}
             </div>
           )}
           <div className="fixed bottom-0 w-full left-0 bg-white p-2 border-t border-gray-200">
@@ -188,7 +186,7 @@ function SingleEvent() {
           <BottomSheet
             open={isBottomSheetOpen}
             onDismiss={() => {
-            setIsBottomSheetOpen(false);
+              setIsBottomSheetOpen(false);
             }}
           >
             <div className="p-4 flex items-center flex-col">

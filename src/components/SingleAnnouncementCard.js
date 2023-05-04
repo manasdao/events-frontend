@@ -29,12 +29,12 @@ function SingleAnnouncementCard({ category, title, content, date }) {
             >
               <circle cx={3} cy={3} r={3} />
             </svg>
-            event_name
+            Hacker house
           </span>
         )}
       </div>
-      <p className="font-medium text-lg mb-2">{title}</p>
-      <p>{content} </p>
+      <p className="font-medium text-lg mb-2 break-all">{title}</p>
+      <p className=" break-all">{content}</p>
     </div>
   );
 }

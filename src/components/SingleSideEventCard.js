@@ -16,16 +16,19 @@ function SingleSideEventCard({ imageUrl, eventDetails, href }) {
         push(href);
       }}
     >
-      <img src={imageUrl} className="w-full rounded-lg mb-2 font-medium" />
+      <img
+        src={eventDetails.fields.Image}
+        className="w-full rounded-lg mb-2 font-medium"
+      />
       <div className="flex items-center text-gray-500 text-xs my-1">
-        <span>18th Aug</span>
+        <span>16th June</span>
         <span className="block w-1.5 h-1.5 mx-2 bg-gray-300 rounded-full"></span>
-        <span>08:00 AM</span>
+        <span>09:00 AM</span>
       </div>
-      <p>Side breakfast with web3 buddies</p>
+      <p>{eventDetails.fields.Activity}</p>
       <div className="flex items-center text-gray-500 text-xs mt-1">
         <span className="flex items-center">
-          <MapPinIcon width={16} className="mr-1" /> 180 Twonsend St
+          <MapPinIcon width={16} className="mr-1" /> {eventDetails.fields.Location}
         </span>
         <span className="block w-1.5 h-1.5 mx-2 bg-gray-300 rounded-full"></span>
         <span>12+ going</span>

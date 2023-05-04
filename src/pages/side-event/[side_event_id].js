@@ -20,6 +20,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect, useState } from "react";
 import { CalendarColorIcon } from "@/utils/Icons";
+import { users } from "@/components/profile/MyProfile";
 export const pickEventForUser = (eventId, isSideEvent, name) => {
   return customAxios.post(
     "/events/pickevent",
@@ -171,46 +172,52 @@ function SingleEvent() {
               {currentTab == "Going" && <Thunderline />}
             </span>
           </div>
-          {currentTab == "About" && (
-            <p>
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sit
-              architecto ut <strong>adipisci iusto provident</strong> omnis
-              necessitatibus ducimus beatae, veniam assumenda maxime, dicta
-              aspernatur nulla molestiae. Facilis laboriosam dolor inventore
-              magnam magni.
-              <br />
-              <br />
-              fugit reiciendis, tempora maiores expedita, veniam ad quae.
-              beatae, veniam assumenda maxime, dicta aspernatur nulla molestiae.
-              Facilis laboriosam <strong>adipisci iusto provident</strong> dolor
-              inventore magnam magni, et fugit reiciendis, tempora maiores
-              expedita, veniam ad quae.
-            </p>
+          {currentTab == "About" && eventDetails?.fields.Notes && (
+            <p>{eventDetails?.fields?.Notes}</p>
           )}
           {currentTab == "Going" && (
             <div>
-              <SingleUserCard />
-              <SingleUserCard />
-              <SingleUserCard />
-              <SingleUserCard />
-              <SingleUserCard />
-              <SingleUserCard />
-              <SingleUserCard />
-              <SingleUserCard />
-              <SingleUserCard />
+              {users.map((singleUser, index) => {
+                if (index > 8) return null;
+                return (
+                  <SingleUserCard
+                    key={singleUser.name}
+                    name={singleUser.name}
+                    designation={singleUser.designation}
+                    imageUrl={singleUser.imageUrl}
+                  />
+                );
+              })}
             </div>
           )}
           {currentTab == "Speakers" && (
             <div>
-              <SingleUserCard />
-              <SingleUserCard />
+              {users.map((singleUser, index) => {
+                if (index > 1) return null;
+                return (
+                  <SingleUserCard
+                    key={singleUser.name}
+                    name={singleUser.name}
+                    designation={singleUser.designation}
+                    imageUrl={singleUser.imageUrl}
+                  />
+                );
+              })}
             </div>
           )}
           {currentTab == "Sponsors" && (
             <div>
-              <SingleUserCard />
-              <SingleUserCard />
-              <SingleUserCard />
+              {users.map((singleUser, index) => {
+                if (index > 2) return null;
+                return (
+                  <SingleUserCard
+                    key={singleUser.name}
+                    name={singleUser.name}
+                    designation={singleUser.designation}
+                    imageUrl={singleUser.imageUrl}
+                  />
+                );
+              })}
             </div>
           )}
           <div className="fixed bottom-0 w-full left-0 bg-white p-2 border-t border-gray-200">

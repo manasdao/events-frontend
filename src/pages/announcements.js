@@ -27,7 +27,7 @@ function Announcements() {
   console.log("announcements", announcements);
   return (
     <DashboardLayout unpadded hideChat>
-      <section className="mt-8">
+      <section className="mt-10">
         <div className="px-4 flex items-center">
           <span
             className={`inline-flex mr-2 items-center gap-x-1.5 rounded-full px-4 py-[5px] text-sm font-medium text-gray-900 ring-1 ring-inset ring-gray-300 ${
@@ -71,7 +71,7 @@ function Announcements() {
             >
               <circle cx={3} cy={3} r={3} />
             </svg>
-            event_name
+            Hacker house
           </span>
         </div>
         <div className="flex items-center border border-gray-300 rounded-full py-2 pl-8 pr-4 w-max -translate-x-4 my-4">

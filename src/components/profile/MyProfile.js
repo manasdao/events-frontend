@@ -9,6 +9,109 @@ import SingleUserCard from "../SingleUserCard";
 import CompactEventCard from "../CompactEventCard";
 import { ArrowLeftIcon, ShareIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/router";
+export const users = [
+  {
+    name: "Avery",
+    designation: "UI/UX Designer",
+    imageUrl: "https://source.unsplash.com/random/?avery",
+  },
+  {
+    name: "Leo",
+    designation: "Frontend Developer",
+    imageUrl: "https://source.unsplash.com/random/?leo",
+  },
+  {
+    name: "Mia",
+    designation: "Product Manager",
+    imageUrl: "https://source.unsplash.com/random/?mia",
+  },
+  {
+    name: "Noah",
+    designation: "Software Engineer",
+    imageUrl: "https://source.unsplash.com/random/?noah",
+  },
+  {
+    name: "Ava",
+    designation: "Data Analyst",
+    imageUrl: "https://source.unsplash.com/random/?ava",
+  },
+  {
+    name: "Ethan",
+    designation: "Systems Architect",
+    imageUrl: "https://source.unsplash.com/random/?ethan",
+  },
+  {
+    name: "Lila",
+    designation: "Full Stack Developer",
+    imageUrl: "https://source.unsplash.com/random/?lila",
+  },
+  {
+    name: "Elijah",
+    designation: "Cloud Engineer",
+    imageUrl: "https://source.unsplash.com/random/?elia",
+  },
+  {
+    name: "Sophia",
+    designation: "Cybersecurity Analyst",
+    imageUrl: "https://source.unsplash.com/random/?sophia",
+  },
+  {
+    name: "Oliver",
+    designation: "Blockchain Developer",
+    imageUrl: "https://source.unsplash.com/random/?olive",
+  },
+  {
+    name: "Lily",
+    designation: "AI/ML Engineer",
+    imageUrl: "https://source.unsplash.com/random/?lily",
+  },
+  {
+    name: "Mason",
+    designation: "DevOps Engineer",
+    imageUrl: "https://source.unsplash.com/random/?mason",
+  },
+  {
+    name: "Zoe",
+    designation: "Mobile Developer",
+    imageUrl: "https://source.unsplash.com/random/?zoe",
+  },
+  {
+    name: "Lucas",
+    designation: "Database Administrator",
+    imageUrl: "https://source.unsplash.com/random/?luke",
+  },
+  {
+    name: "Chloe",
+    designation: "Network Engineer",
+    imageUrl: "https://source.unsplash.com/random/?chole",
+  },
+  {
+    name: "Logan",
+    designation: "Game Developer",
+    imageUrl: "https://source.unsplash.com/random/?logan",
+  },
+  {
+    name: "Emma",
+    designation: "IT Manager",
+    imageUrl: "https://source.unsplash.com/random/?emma",
+  },
+  {
+    name: "Sebastian",
+    designation: "QA Engineer",
+    imageUrl: "https://source.unsplash.com/random/?seb",
+  },
+  {
+    name: "Aria",
+    designation: "UI Developer",
+    imageUrl: "https://source.unsplash.com/random/?person",
+  },
+  {
+    name: "Caleb",
+    designation: "Tech Support Specialist",
+    imageUrl: "https://source.unsplash.com/random/?person",
+  },
+];
+
 function MyProfile() {
   const { back } = useRouter();
 
@@ -58,7 +161,7 @@ function MyProfile() {
       </DashboardLayout>
     );
   return (
-    <div className="mt-8 text-gray-900">
+    <div className="mt-10 text-gray-900">
       <div className="flex flex-col w-full items-center">
         <div className="flex items-center w-full justify-between">
           <ArrowLeftIcon
@@ -87,22 +190,16 @@ function MyProfile() {
           url="https://twitter.com/tripathigrows"
           className="mx-4 "
           style={{ width: "32px", height: "32px" }}
-          color="#cccccc"
-          bgColor="#9CA3AF"
         />
         <SocialIcon
           url="https://www.linkedin.com/in/manas-tripathi-dev/"
           className="mx-4 "
           style={{ width: "32px", height: "32px" }}
-          color="#cccccc"
-          bgColor="#9CA3AF"
         />
         <SocialIcon
           url="https://www.t.me/scotch1998"
           className="mx-4 "
           style={{ width: "32px", height: "32px" }}
-          color="#cccccc"
-          bgColor="#9CA3AF"
         />
       </div>
       <div className="grid grid-cols-3 my-4 mx-8">
@@ -143,7 +240,7 @@ function MyProfile() {
           Bumpped
           {currentTab == "Bumpped" && <Thunderline width={60} />}{" "}
         </span>
-        <span
+        {/* <span
           onClick={() => {
             setCurrentTab("Event");
           }}
@@ -153,44 +250,48 @@ function MyProfile() {
         >
           Event
           {currentTab == "Event" && <Thunderline width={60} />}
-        </span>
+        </span> */}
         <span
           onClick={() => {
-            setCurrentTab("POaP");
+            setCurrentTab("POAP");
           }}
           className={`cursor-pointer text-lg font-semibold flex items-center  min-w-[60px] flex-col ${
-            currentTab == "POaP" ? "text-gray-900 " : "text-gray-500"
+            currentTab == "POAP" ? "text-gray-900 " : "text-gray-500"
           }`}
         >
-          POaP
-          {currentTab == "POaP" && <Thunderline width={60} />}{" "}
+          POAP
+          {currentTab == "POAP" && <Thunderline width={60} />}{" "}
         </span>
       </div>
       {currentTab == "About" && (
         <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam nobis,
-          sapiente minus qui sed cumque dolorem nesciunt enim dicta ducimus hic
-          temporibus provident! Consequuntur at odio rerum veniam? Animi rerum
-          molestias explicabo incidunt mollitia atque iste perferendis qui
-          temporibus optio repudiandae modi unde officia expedita tempore, odio
-          quia obcaecati laudantium?
+          As a blockchain engineer, I am at the forefront of innovation in the
+          decentralized space. With a passion for developing new systems that
+          can transform the way we interact with one another, I have spent years
+          honing my craft and pushing the boundaries of what is possible. At the
+          DAO conference, I have the opportunity to share my expertise with
+          like-minded individuals and learn from some of the brightest minds in
+          the industry. Whether I am interested in building new DAOs or
+          exploring the latest trends in blockchain technology, this conference
+          is the perfect place for me to network and grow as a professional.
         </p>
       )}
       {currentTab == "Bumpped" && (
         <>
-          <SingleUserCard />
-          <SingleUserCard />
-          <SingleUserCard />
-          <SingleUserCard />
-          <SingleUserCard />
-          <SingleUserCard />
-          <SingleUserCard />
-          <SingleUserCard />
-          <SingleUserCard />
-          <SingleUserCard />
+          {users.map((singleUser, index) => {
+            if (index > 9) return null;
+            return (
+              <SingleUserCard
+                key={singleUser.name}
+                name={singleUser.name}
+                designation={singleUser.designation}
+                imageUrl={singleUser.imageUrl}
+              />
+            );
+          })}
         </>
       )}
-      {currentTab == "Event" && (
+      {/* {currentTab == "Event" && (
         <>
           <CompactEventCard />
           <CompactEventCard />
@@ -201,8 +302,8 @@ function MyProfile() {
           <CompactEventCard />
           <CompactEventCard />
         </>
-      )}
-      {userProfile?.attended?.length > 0 && currentTab == "POaP" && (
+      )} */}
+      {userProfile?.attended?.length > 0 && currentTab == "POAP" && (
         <div>
           {/* <h4 className="text-lg text-gray-300 my-2 font-bold">POAPs</h4> */}
           <div className="overflow-x-scroll flex items-center">
@@ -212,17 +313,12 @@ function MyProfile() {
                   <div key={index} className="flex flex-col items-center mr-4 ">
                     <Link
                       href={`/event/${singlePoap.event}`}
-                      className="whitespace-nowrap inline-flex items-center justify-center h-12 w-12 rounded-full bg-purple-200 text-purple-800 font-bold text-xl "
+                      className="whitespace-nowrap inline-flex  items-center justify-center h-12 w-12 rounded-full  font-bold text-xl "
                     >
-                      {singlePoap.eventName[0]}
-                    </Link>
-                  </div>
-                  <div key={index} className="flex flex-col items-center mr-4 ">
-                    <Link
-                      href={`/event/${singlePoap.event}`}
-                      className="whitespace-nowrap inline-flex items-center justify-center h-12 w-12 rounded-full bg-purple-200 text-purple-800 font-bold text-xl "
-                    >
-                      {singlePoap.eventName[0]}
+                      <img
+                        className="object-cover rounded-full h-full"
+                        src={`https://source.unsplash.com/random/?${singlePoap.eventName}`}
+                      />
                     </Link>
                   </div>
                 </>

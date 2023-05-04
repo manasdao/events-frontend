@@ -37,7 +37,7 @@ export default function Example() {
             <span className=" block border border-dashed border-gray-300 top-[50%] w-[75%] "></span>
             <div className="self-start flex items-center text-lg text-gray-700 font-bold my-4">
               <img
-                className="inline-block h-8 w-8 rounded-full ring-2 ring-white"
+                className="inline-block mr-2 h-8 w-8 rounded-full ring-2 ring-white"
                 src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.25&w=256&h=256&q=80"
                 alt=""
               />{" "}

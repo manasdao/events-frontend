@@ -9,11 +9,15 @@ import React from "react";
 function SingleHotelCard({ imageUrl, hotelDetails }) {
   return (
     <div className="p-2 border border-gray-300 rounded-lg max-w-[320px]">
-      <img src={imageUrl} className="w-full rounded-lg mb-2 font-medium" />
-      <p>The Chancery hotel</p>
+      <img
+        src={hotelDetails.fields.Image}
+        className="w-full rounded-lg mb-2 font-medium"
+      />
+      <p>{hotelDetails.fields.Name}</p>
       <div className="flex items-center text-gray-500 text-xs mt-1 mb-2">
         <span className="flex items-center">
-          <MapPinIcon width={16} className="mr-1" /> 180 Twonsend St
+          <MapPinIcon width={16} className="mr-1" />{" "}
+          {hotelDetails.fields.Address}
         </span>
         <span className="block w-1.5 h-1.5 mx-2 bg-gray-300 rounded-full"></span>
         <span>0.3 miles</span>
@@ -26,7 +30,7 @@ function SingleHotelCard({ imageUrl, hotelDetails }) {
           </span>
         </span>
         <span className="block w-1.5 h-1.5 mx-2 bg-gray-300 rounded-full"></span>
-        <span>⭐️4.5</span>
+        <span>⭐️{hotelDetails.fields.Rating}</span>
       </div>
       <div
         className="grid gap-2 mt-2"
